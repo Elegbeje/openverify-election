@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenVerify AI — Election Information Triage</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fa;
+  color: #172033;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 28px 5%;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+
+header p {
+  margin: 0;
+  color: #d1d5db;
+}
+
+.container {
+  width: 90%;
+  max-width: 1250px;
+  margin: 30px auto;
+}
+
+.notice {
+  background: #fff8e6;
+  border: 1px solid #f1d58a;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.stat {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 5px rgba(0,0,0,.04);
+}
+
+.stat .number {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.stat .label {
+  color: #6b7280;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.04);
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+textarea,
+input,
+select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 7px;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+button {
+  border: none;
+  padding: 11px 17px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.success {
+  background: #15803d;
+  color: white;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+.result {
+  border-left: 5px solid #2563eb;
+  background: #eff6ff;
+  padding: 18px;
+  border-radius: 6px;
+  margin-top: 18px;
+}
+
+.result.review {
+  border-left-color: #d97706;
+  background: #fff7ed;
+}
+
+.result.low {
+  border-left-color: #15803d;
+  background: #f0fdf4;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #e5e7eb;
+}
+
+.badge.review {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.badge.low {
+  background: #bbf7d0;
+  color: #166534;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 11px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+  font-size: 13px;
+}
+
+th {
+  background: #f8fafc;
+  font-size: 12px;
+}
+
+.review-btn {
+  background: #111827;
+  color: white;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.hidden {
+  display: none;
+}
+
+.small {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+ul {
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+@media(max-width: 800px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 500px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>OpenVerify AI</h1>
+  <p>AI-assisted election information triage & verification — clickable proof of concept</p>
+</header>
+
+<div class="container">
+
+  <div class="notice">
+    <strong>Human-in-the-loop:</strong>
+    OpenVerify AI does not independently declare information true, false,
+    fraudulent, or manipulated. It identifies information that may deserve
+    closer review and helps the human reviewer organise the evidence.
+  </div>
+
+  <!-- STATISTICS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="number" id="totalRecords">0</div>
+      <div class="label">Records loaded</div>
+    </div>
+
+    <div class="stat">
+      <div class="number" id="reviewCount">0</div>
+      <div class="label">Review recommended</div>
+    </div>
+
+    <div class="stat">
+      <div class="number" id="lowCount">0</div>
+      <div class="label">Low priority</div>
+    </div>
+
+    <div class="stat">
+      <div class="number" id="revertCount">0</div>
+      <div class="label">Explicit reverts</div>
+    </div>
+  </div>
+
+
+  <!-- STEP 1 -->
+  <div class="card">
+
+    <h2>1. Submit information for triage</h2>
+
+    <p class="small">
+      Submit an election-related claim, observation, or public revision record
+      for AI-assisted triage.
+    </p>
+
+    <label for="submission">Information to analyse</label>
+
+    <textarea id="submission"
+      placeholder="Paste an election-related claim, observation, or revision record here..."></textarea>
+
+    <div class="form-grid">
+
+      <div>
+        <label for="source">Source</label>
+        <select id="source">
+          <option value="Wikimedia public revision data">
+            Wikimedia public revision data
+          </option>
+          <option value="Election observation report">
+            Election observation report
+          </option>
+          <option value="Fact-checking submission">
+            Fact-checking submission
+          </option>
+          <option value="Election results/data record">
+            Election results/data record
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label for="lens">Priority lens</label>
+        <select id="lens">
+          <option value="Process change">Process change</option>
+          <option value="Large change">Large change</option>
+          <option value="Revert">Revert</option>
+          <option value="Conflicting information">Conflicting information</option>
+          <option value="Duplicate information">Duplicate information</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="button-row">
+      <button class="primary" onclick="runTriage()">
+        Run AI triage
+      </button>
+
+      <button class="secondary" onclick="loadExample()">
+        Load example
+      </button>
+    </div>
+
+  </div>
+
+
+  <!-- STEP 2 -->
+  <div class="card">
+
+    <h2>2. AI-assisted triage result</h2>
+
+    <div id="triageEmpty" class="empty">
+      Load an example or enter information above, then click
+      <strong>Run AI triage</strong>.
+    </div>
+
+    <div id="triageResult" class="hidden"></div>
+
+  </div>
+
+
+  <!-- STEP 3 -->
+  <div class="card">
+
+    <h2>3. Human verification queue</h2>
+
+    <div class="form-grid">
+
+      <div>
+        <label for="filter">Filter</label>
+        <select id="filter" onchange="renderTable()">
+          <option value="All">All</option>
+          <option value="Review recommended">Review recommended</option>
+          <option value="Low">Low</option>
+          <option value="Revert">Revert</option>
+          <option value="Large change">Large change</option>
+          <option value="Translation">Translation</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="search">Search</label>
+        <input
+          id="search"
+          type="text"
+          placeholder="editor, page, summary..."
+          oninput="renderTable()">
+      </div>
+
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Page</th>
+            <th>Editor</th>
+            <th>Change</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Human action</th>
+          </tr>
+        </thead>
+
+        <tbody id="recordsTable"></tbody>
+
+      </table>
+    </div>
+
+    <p class="small">
+      Source dataset is derived from public revision records extracted via
+      Wikimedia Quarry query #109467.
+    </p>
+
+    <p>
+      <a
+        href="https://quarry.wmcloud.org/query/109467"
+        target="_blank"
+        rel="noopener">
+        Open Quarry data source →
+      </a>
+    </p>
+
+  </div>
+
+
+  <!-- STEP 4 -->
+  <div class="card">
+
+    <h2>4. Human verification</h2>
+
+    <div id="selectedRecord" class="empty">
+      Select a record from the verification queue.
+    </div>
+
+    <div id="verificationForm" class="hidden">
+
+      <p>
+        <strong>Selected record:</strong>
+        <span id="selectedId"></span>
+      </p>
+
+      <label for="decision">Reviewer decision</label>
+
+      <select id="decision">
+        <option value="">Select decision</option>
+        <option value="Verified - no issue identified">
+          Verified - no issue identified
+        </option>
+        <option value="Requires further review">
+          Requires further review
+        </option>
+        <option value="Evidence supports the change">
+          Evidence supports the change
+        </option>
+        <option value="Evidence insufficient">
+          Evidence insufficient
+        </option>
+        <option value="Contextual / routine activity">
+          Contextual / routine activity
+        </option>
+      </select>
+
+      <br><br>
+
+      <label for="evidence">
+        Evidence checked
+      </label>
+
+      <input
+        id="evidence"
+        type="text"
+        placeholder="Revision diff, process page, official source...">
+
+      <br><br>
+
+      <label for="notes">
+        Reviewer notes
+      </label>
+
+      <textarea
+        id="notes"
+        placeholder="Record what was checked and why the reviewer reached the decision..."></textarea>
+
+      <div class="button-row">
+
+        <button class="success" onclick="saveVerification()">
+          Save verification
+        </button>
+
+      </div>
+
+      <div id="saveMessage" class="hidden result low"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  OpenVerify AI — AI-assisted election information triage and verification
+  proof of concept.
+</footer>
+
+
+<script>
+
+/* =========================================================
+   OPENVERIFY DATASET
+   12 public Quarry-derived records
+   ========================================================= */
+
+const records = [
+
+{
+id:"OV-001",
+page:"FAQ",
+editor:"RamzyM (WMF)",
+revision_id:"29236473",
+timestamp:"2025-09-08 10:52:54 UTC",
+summary:"add new FAQ for voters",
+minor:"Yes",
+length:"20535",
+parent:"29225160",
+change:"4900",
+category:"FAQ / process change",
+priority:"Review recommended",
+reason:"Substantive process/FAQ change; human review can confirm the supporting source and intended wording."
+},
+
+{
+id:"OV-002",
+page:"FAQ",
+editor:"RamzyM (WMF)",
+revision_id:"29162721",
+timestamp:"2025-08-21 16:41:31 UTC",
+summary:"add new FAQ for Change to the order of the selection process",
+minor:"Yes",
+length:"15366",
+parent:"28974997",
+change:"4666",
+category:"FAQ / process change",
+priority:"Review recommended",
+reason:"Large documented process-related change; review evidence/context rather than infer wrongdoing."
+},
+
+{
+id:"OV-003",
+page:"Candidate_application",
+editor:"RamzyM (WMF)",
+revision_id:"28766517",
+timestamp:"2025-05-22 14:29:57 UTC",
+summary:"Marked this version for translation",
+minor:"No",
+length:"6609",
+parent:"28766516",
+change:"12",
+category:"Translation / maintenance",
+priority:"Low",
+reason:"Explicit translation-maintenance action with minimal length change."
+},
+
+{
+id:"OV-004",
+page:"Candidate_application/de",
+editor:"RamzyM (WMF)",
+revision_id:"28767018",
+timestamp:"2025-05-22 14:53:46 UTC",
+summary:"Created page with German content",
+minor:"No",
+length:"6106",
+parent:"28767016",
+change:"12",
+category:"Translation / page creation",
+priority:"Low",
+reason:"Page creation/translation pattern; not itself evidence of a problem."
+},
+
+{
+id:"OV-005",
+page:"Candidate_application/ha",
+editor:"Xeno (WMF)",
+revision_id:"28767071",
+timestamp:"2025-05-22 14:58:19 UTC",
+summary:"Created page with Hausa content",
+minor:"No",
+length:"5502",
+parent:"28767069",
+change:"41",
+category:"Translation / page creation",
+priority:"Low",
+reason:"Page creation/translation pattern; not itself evidence of a problem."
+},
+
+{
+id:"OV-006",
+page:"Candidate_application/bn",
+editor:"Nettime Sujata",
+revision_id:"28771830",
+timestamp:"2025-05-23 09:49:59 UTC",
+summary:"Candidates must complete WikiLearn…",
+minor:"No",
+length:"8137",
+parent:"28771826",
+change:"143",
+category:"Translation / content maintenance",
+priority:"Low",
+reason:"Small incremental language-page change; no standalone review signal."
+},
+
+{
+id:"OV-007",
+page:"Candidate_application",
+editor:"Lane Rasberry",
+revision_id:"28915442",
+timestamp:"2025-06-29 05:13:24 UTC",
+summary:"publish",
+minor:"No",
+length:"22555",
+parent:"28911690",
+change:"17716",
+category:"Large change",
+priority:"Review recommended",
+reason:"Large change from the parent revision; reviewer should inspect the diff and context."
+},
+
+{
+id:"OV-008",
+page:"Candidate_application",
+editor:"ShahenWasHere",
+revision_id:"28943333",
+timestamp:"2025-07-06 13:56:24 UTC",
+summary:"Edited my responses and shortened them to adhere to the set word count.",
+minor:"No",
+length:"18824",
+parent:"28943289",
+change:"12696",
+category:"Large change",
+priority:"Review recommended",
+reason:"Large documented edit with an explicit explanation; verify the diff if needed."
+},
+
+{
+id:"OV-009",
+page:"Candidate_application",
+editor:"GreatPatent",
+revision_id:"28945376",
+timestamp:"2025-07-07 04:06:16 UTC",
+summary:"",
+minor:"No",
+length:"36123",
+parent:"28945336",
+change:"5370",
+category:"Large change",
+priority:"Review recommended",
+reason:"Large change without a detailed summary; inspect the revision diff and surrounding sequence."
+},
+
+{
+id:"OV-010",
+page:"FAQ",
+editor:"Stïnger",
+revision_id:"30178958",
+timestamp:"2026-03-05 17:42:41 UTC",
+summary:"Reverted change by Mesocyclonic93 to last version by SciWhiz12",
+minor:"Yes",
+length:"22041",
+parent:"30168613",
+change:"140",
+category:"Revert",
+priority:"Review recommended",
+reason:"Explicit revert. Review the before/after revisions and edit history; a revert is not itself evidence of wrongdoing."
+},
+
+{
+id:"OV-011",
+page:"Candidate_application",
+editor:"MdsShakil",
+revision_id:"30175416",
+timestamp:"2026-03-05 17:12:41 UTC",
+summary:"Reverted change by MdsShakil to last version by RamzyM (WMF)",
+minor:"Yes",
+length:"7886",
+parent:"30168728",
+change:"140",
+category:"Revert",
+priority:"Review recommended",
+reason:"Explicit revert. Review the before/after revisions and edit history; a revert is not itself evidence of wrongdoing."
+},
+
+{
+id:"OV-012",
+page:"Candidate_application",
+editor:"MdsShakil",
+revision_id:"30168728",
+timestamp:"2026-03-05 15:15:57 UTC",
+summary:"Закрываем проект",
+minor:"No",
+length:"8026",
+parent:"30168613",
+change:"134",
+category:"Normal / contextual edit",
+priority:"Low",
+reason:"Small contextual edit; meaning should be interpreted from the surrounding revision sequence."
+}
+
+];
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let selectedRecord = null;
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+function initialise() {
+
+  document.getElementById("totalRecords").textContent =
+    records.length;
+
+  document.getElementById("reviewCount").textContent =
+    records.filter(r => r.priority === "Review recommended").length;
+
+  document.getElementById("lowCount").textContent =
+    records.filter(r => r.priority === "Low").length;
+
+  document.getElementById("revertCount").textContent =
+    records.filter(r => r.category === "Revert").length;
+
+  renderTable();
+}
+
+
+/* =========================================================
+   LOAD EXAMPLE
+   ========================================================= */
+
+function loadExample() {
+
+  const example = records.find(r => r.id === "OV-010");
+
+  document.getElementById("submission").value =
+`Revision ID: ${example.revision_id}
+Page: ${example.page}
+Editor: ${example.editor}
+Timestamp: ${example.timestamp}
+Edit summary: ${example.summary}
+Parent revision: ${example.parent}
+Length change: ${example.change} bytes
+Category: ${example.category}`;
+
+  document.getElementById("source").value =
+    "Wikimedia public revision data";
+
+  document.getElementById("lens").value =
+    "Revert";
+
+  runTriage();
+
+  document.getElementById("submission").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+
+/* =========================================================
+   AI-ASSISTED TRIAGE
+   ========================================================= */
+
+function runTriage() {
+
+  const input =
+    document.getElementById("submission").value.trim();
+
+  const result =
+    document.getElementById("triageResult");
+
+  const empty =
+    document.getElementById("triageEmpty");
+
+  if (!input) {
+
+    alert(
+      "Please enter information or click Load example first."
+    );
+
+    return;
+  }
+
+  let matched = null;
+
+  for (const record of records) {
+
+    if (
+      input.includes(record.revision_id) ||
+      input.includes(record.id)
+    ) {
+
+      matched = record;
+      break;
+    }
+
+  }
+
+  /*
+   If the input corresponds to one of the 12 records,
+   use its structured classification.
+  */
+
+  if (matched) {
+
+    const review =
+      matched.priority === "Review recommended";
+
+    result.className =
+      "result " + (review ? "review" : "low");
+
+    result.innerHTML = `
+
+      <h3>
+        ${review ? "Review recommended" : "Low priority"}
+      </h3>
+
+      <p>
+        <strong>Record:</strong>
+        ${matched.id}
+      </p>
+
+      <p>
+        <strong>Category:</strong>
+        ${matched.category}
+      </p>
+
+      <p>
+        <strong>AI-assisted reasoning:</strong>
+        ${matched.reason}
+      </p>
+
+      <h4>Suggested human checks</h4>
+
+      <ul>
+
+        <li>
+          Inspect the revision diff and parent revision.
+        </li>
+
+        <li>
+          Check the edit summary and surrounding revision sequence.
+        </li>
+
+        <li>
+          Compare the change against relevant public
+          process documentation.
+        </li>
+
+        <li>
+          Record the evidence supporting the human decision.
+        </li>
+
+      </ul>
+
+      <p class="small">
+        This recommendation is a triage signal only.
+        It is not a finding of wrongdoing.
+      </p>
+
+    `;
+
+  } else {
+
+    /*
+     Generic triage for manually entered information.
+     */
+
+    result.className = "result review";
+
+    result.innerHTML = `
+
+      <h3>Review recommended</h3>
+
+      <p>
+        The submitted information contains material that may
+        benefit from human verification.
+      </p>
+
+      <h4>Suggested checks</h4>
+
+      <ul>
+
+        <li>Identify the original source.</li>
+
+        <li>Check whether the information is duplicated.</li>
+
+        <li>Check for conflicting information.</li>
+
+        <li>Inspect relevant evidence or source documents.</li>
+
+        <li>Record the basis for the final human assessment.</li>
+
+      </ul>
+
+      <p class="small">
+        OpenVerify AI does not independently determine whether
+        information is true, false, fraudulent, or manipulated.
+      </p>
+
+    `;
+
+  }
+
+  empty.classList.add("hidden");
+  result.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   TABLE RENDERING
+   ========================================================= */
+
+function renderTable() {
+
+  const tbody =
+    document.getElementById("recordsTable");
+
+  const filter =
+    document.getElementById("filter").value;
+
+  const search =
+    document.getElementById("search").value
+      .toLowerCase()
+      .trim();
+
+  let filtered = records.filter(record => {
+
+    let filterMatch = true;
+
+    if (filter === "Review recommended") {
+
+      filterMatch =
+        record.priority === "Review recommended";
+
+    }
+
+    else if (filter === "Low") {
+
+      filterMatch =
+        record.priority === "Low";
+
+    }
+
+    else if (filter === "Revert") {
+
+      filterMatch =
+        record.category === "Revert";
+
+    }
+
+    else if (filter === "Large change") {
+
+      filterMatch =
+        record.category === "Large change";
+
+    }
+
+    else if (filter === "Translation") {
+
+      filterMatch =
+        record.category.startsWith("Translation");
+
+    }
+
+    const searchable = (
+
+      record.id + " " +
+      record.page + " " +
+      record.editor + " " +
+      record.summary + " " +
+      record.category
+
+    ).toLowerCase();
+
+    const searchMatch =
+      !search || searchable.includes(search);
+
+    return filterMatch && searchMatch;
+
+  });
+
+
+  if (filtered.length === 0) {
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">
+          No records match your filter/search.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  tbody.innerHTML =
+    filtered.map(record => {
+
+      const badgeClass =
+        record.priority === "Review recommended"
+          ? "review"
+          : "low";
+
+      return `
+
+      <tr>
+
+        <td>
+          <strong>${record.id}</strong>
+        </td>
+
+        <td>
+          ${record.page}
+        </td>
+
+        <td>
+          ${record.editor}
+        </td>
+
+        <td>
+          ${Number(record.change).toLocaleString()} bytes
+        </td>
+
+        <td>
+          ${record.category}
+        </td>
+
+        <td>
+          <span class="badge ${badgeClass}">
+            ${record.priority}
+          </span>
+        </td>
+
+        <td>
+
+          <button
+            class="review-btn"
+            onclick="reviewRecord('${record.id}')">
+
+            Review
+
+          </button>
+
+        </td>
+
+      </tr>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   SELECT RECORD FOR HUMAN REVIEW
+   ========================================================= */
+
+function reviewRecord(id) {
+
+  selectedRecord =
+    records.find(record => record.id === id);
+
+  if (!selectedRecord) return;
+
+  document.getElementById("selectedRecord")
+    .classList.add("hidden");
+
+  document.getElementById("verificationForm")
+    .classList.remove("hidden");
+
+  document.getElementById("selectedId").textContent =
+    selectedRecord.id + " — " +
+    selectedRecord.page + " — " +
+    selectedRecord.editor;
+
+  document.getElementById("decision").value = "";
+
+  document.getElementById("evidence").value =
+    "";
+
+  document.getElementById("notes").value =
+    "";
+
+  document.getElementById("saveMessage")
+    .classList.add("hidden");
+
+  document.getElementById("verificationForm")
+    .scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+}
+
+
+/* =========================================================
+   SAVE HUMAN VERIFICATION
+   ========================================================= */
+
+function saveVerification() {
+
+  if (!selectedRecord) {
+
+    alert("Please select a record first.");
+
+    return;
+  }
+
+  const decision =
+    document.getElementById("decision").value;
+
+  const evidence =
+    document.getElementById("evidence").value.trim();
+
+  const notes =
+    document.getElementById("notes").value.trim();
+
+
+  if (!decision) {
+
+    alert("Please select a reviewer decision.");
+
+    return;
+  }
+
+
+  if (!evidence) {
+
+    alert("Please enter the evidence checked.");
+
+    return;
+  }
+
+
+  if (!notes) {
+
+    alert("Please add reviewer notes.");
+
+    return;
+  }
+
+
+  const verification = {
+
+    record_id: selectedRecord.id,
+
+    revision_id: selectedRecord.revision_id,
+
+    decision: decision,
+
+    evidence: evidence,
+
+    notes: notes,
+
+    saved_at:
+      new Date().toISOString()
+
+  };
+
+
+  /*
+   Save locally in the browser.
+   This is appropriate for a prototype demonstration.
+  */
+
+  const existing =
+    JSON.parse(
+      localStorage.getItem("openverify_reviews") || "[]"
+    );
+
+  existing.push(verification);
+
+  localStorage.setItem(
+    "openverify_reviews",
+    JSON.stringify(existing)
+  );
+
+
+  const message =
+    document.getElementById("saveMessage");
+
+  message.innerHTML = `
+
+    <strong>Verification saved.</strong>
+
+    <br><br>
+
+    Record:
+    ${selectedRecord.id}
+
+    <br>
+
+    Decision:
+    ${decision}
+
+    <br>
+
+    Evidence:
+    ${evidence}
+
+  `;
+
+  message.classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   START APPLICATION
+   ========================================================= */
+
+initialise();
+
+</script>
+
+</body>
+</html>
