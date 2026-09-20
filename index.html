@@ -143,6 +143,11 @@ button {
   color: white;
 }
 
+.real-world {
+  background: #7c3aed;
+  color: white;
+}
+
 button:hover {
   opacity: .9;
 }
@@ -163,6 +168,11 @@ button:hover {
 .result.low {
   border-left-color: #15803d;
   background: #f0fdf4;
+}
+
+.result.info {
+  border-left-color: #7c3aed;
+  background: #f5f3ff;
 }
 
 .badge {
@@ -379,6 +389,10 @@ footer {
 
       <button class="secondary" onclick="loadExample()">
         Load example
+      </button>
+
+      <button class="real-world" onclick="loadRealWorldClaim()">
+        Real-world claim
       </button>
 
     </div>
@@ -869,6 +883,42 @@ Category: ${example.category}`;
 
 
 /* =========================================================
+   REAL-WORLD CLAIM
+   ========================================================= */
+
+function loadRealWorldClaim() {
+
+  document.getElementById("submission").value =
+`UNVERIFIED PUBLIC CLAIM
+
+Claim:
+"A public claim states that President Bola Ahmed Tinubu is 90 years old."
+
+Verification task:
+Assess the claim against authoritative and historical public records.
+
+Important:
+The claim is being submitted for verification and should not be
+treated as an established fact. The reviewer should examine the
+original source, the provenance of the claim, and relevant
+public records before reaching a final assessment.`;
+
+  document.getElementById("source").value =
+    "Fact-checking submission";
+
+  document.getElementById("lens").value =
+    "Conflicting information";
+
+  runTriage();
+
+  document.getElementById("submission").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+
+/* =========================================================
    AI-ASSISTED TRIAGE
    ========================================================= */
 
@@ -891,6 +941,95 @@ function runTriage() {
 
     return;
   }
+
+
+  /* REAL-WORLD CLAIM DETECTION */
+
+  const isRealWorldClaim =
+    input.includes("Tinubu") ||
+    input.includes("90 years old") ||
+    input.includes("90-year-old") ||
+    input.includes("public claim states");
+
+
+  if (isRealWorldClaim) {
+
+    result.className =
+      "result review";
+
+    result.innerHTML = `
+
+      <h3>Review recommended</h3>
+
+      <p>
+        <strong>Submission type:</strong>
+        Real-world election information claim
+      </p>
+
+      <p>
+        <strong>Claim status:</strong>
+        Unverified
+      </p>
+
+      <p>
+        <strong>AI-assisted reasoning:</strong>
+        The submitted claim concerns a publicly documented
+        biographical fact and should be checked against
+        authoritative and historical records. The system has
+        identified a potential conflict between the submitted
+        claim and publicly documented information.
+      </p>
+
+      <h4>Suggested human verification checks</h4>
+
+      <ul>
+
+        <li>
+          Identify and preserve the original source of the claim.
+        </li>
+
+        <li>
+          Check authoritative public biographies and government
+          records.
+        </li>
+
+        <li>
+          Check election-related public records where relevant.
+        </li>
+
+        <li>
+          Examine historical records that may contain different
+          birth-year information.
+        </li>
+
+        <li>
+          Check whether the person making the claim has provided
+          supporting documentary evidence.
+        </li>
+
+        <li>
+          Record each source checked and explain the basis for
+          the final human assessment.
+        </li>
+
+      </ul>
+
+      <p class="small">
+        OpenVerify AI is providing a triage recommendation only.
+        It does not independently determine whether the claim is
+        true or false.
+      </p>
+
+    `;
+
+    empty.classList.add("hidden");
+    result.classList.remove("hidden");
+
+    return;
+  }
+
+
+  /* WIKIMEDIA RECORD MATCHING */
 
   let matched = null;
 
