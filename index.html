@@ -309,6 +309,7 @@ footer {
 
   </div>
 
+
   <!-- STEP 1 -->
 
   <div class="card">
@@ -317,7 +318,8 @@ footer {
 
     <p class="small">
       Submit an election-related claim, observation, or public revision record
-      for AI-assisted triage.
+      for AI-assisted triage. Use <strong>Real-world claim</strong> to enter
+      any election-related claim for human verification.
     </p>
 
     <label for="submission">Information to analyse</label>
@@ -399,6 +401,7 @@ footer {
 
   </div>
 
+
   <!-- STEP 2 -->
 
   <div class="card">
@@ -413,6 +416,7 @@ footer {
     <div id="triageResult" class="hidden"></div>
 
   </div>
+
 
   <!-- STEP 3 -->
 
@@ -496,8 +500,10 @@ footer {
     </div>
 
     <p class="small">
-      Source dataset is derived from public revision records extracted via
-      Wikimedia Quarry query #109467.
+      Source dataset contains 12 public Wikimedia revision records
+      extracted via Wikimedia Quarry query #109467. Real-world claims entered
+      through the form are separate test submissions and are not part of this
+      dataset.
     </p>
 
     <p>
@@ -511,6 +517,7 @@ footer {
     </p>
 
   </div>
+
 
   <!-- STEP 4 -->
 
@@ -603,10 +610,12 @@ footer {
 
 </div>
 
+
 <footer>
   OpenVerify AI — AI-assisted election information triage and verification
   proof of concept.
 </footer>
+
 
 <script>
 
@@ -883,25 +892,37 @@ Category: ${example.category}`;
 
 
 /* =========================================================
-   REAL-WORLD CLAIM
+   GENERIC REAL-WORLD CLAIM
    ========================================================= */
 
 function loadRealWorldClaim() {
+
+  const claim = prompt(
+    "Enter a real-world election-related claim for verification:",
+    ""
+  );
+
+  if (!claim || !claim.trim()) {
+    return;
+  }
 
   document.getElementById("submission").value =
 `UNVERIFIED PUBLIC CLAIM
 
 Claim:
-"A public claim states that President Bola Ahmed Tinubu is 90 years old."
+"${claim.trim()}"
 
 Verification task:
-Assess the claim against authoritative and historical public records.
+Assess the claim using relevant authoritative, primary,
+historical, election-monitoring, official, or other credible
+public evidence.
 
 Important:
-The claim is being submitted for verification and should not be
-treated as an established fact. The reviewer should examine the
-original source, the provenance of the claim, and relevant
-public records before reaching a final assessment.`;
+The submitted claim is unverified and should not be treated
+as an established fact. The reviewer should identify the
+original source, examine the evidence, check for conflicting
+information, establish the relevant timeframe and context,
+and record the basis for the final human assessment.`;
 
   document.getElementById("source").value =
     "Fact-checking submission";
@@ -945,11 +966,11 @@ function runTriage() {
 
   /* REAL-WORLD CLAIM DETECTION */
 
+  const source =
+    document.getElementById("source").value;
+
   const isRealWorldClaim =
-    input.includes("Tinubu") ||
-    input.includes("90 years old") ||
-    input.includes("90-year-old") ||
-    input.includes("public claim states");
+    source === "Fact-checking submission";
 
 
   if (isRealWorldClaim) {
@@ -968,16 +989,15 @@ function runTriage() {
 
       <p>
         <strong>Claim status:</strong>
-        Unverified
+        Unverified — requires human verification
       </p>
 
       <p>
         <strong>AI-assisted reasoning:</strong>
-        The submitted claim concerns a publicly documented
-        biographical fact and should be checked against
-        authoritative and historical records. The system has
-        identified a potential conflict between the submitted
-        claim and publicly documented information.
+        The submitted information is a real-world election-related
+        claim. OpenVerify AI has routed it for human verification
+        because the claim should be checked against relevant
+        evidence before any conclusion is reached.
       </p>
 
       <h4>Suggested human verification checks</h4>
@@ -989,27 +1009,33 @@ function runTriage() {
         </li>
 
         <li>
-          Check authoritative public biographies and government
-          records.
+          Establish the relevant date, location, people, institutions,
+          and timeframe covered by the claim.
         </li>
 
         <li>
-          Check election-related public records where relevant.
+          Check authoritative primary sources and official records
+          where available.
         </li>
 
         <li>
-          Examine historical records that may contain different
-          birth-year information.
+          Compare the claim with credible election-monitoring,
+          civil-society, media, or other relevant evidence.
         </li>
 
         <li>
-          Check whether the person making the claim has provided
-          supporting documentary evidence.
+          Check for conflicting or independently corroborating
+          information.
         </li>
 
         <li>
-          Record each source checked and explain the basis for
-          the final human assessment.
+          Distinguish confirmed facts from allegations, estimates,
+          interpretations, and unverified reports.
+        </li>
+
+        <li>
+          Record the sources checked and explain the basis for the
+          final human assessment.
         </li>
 
       </ul>
@@ -1017,7 +1043,7 @@ function runTriage() {
       <p class="small">
         OpenVerify AI is providing a triage recommendation only.
         It does not independently determine whether the claim is
-        true or false.
+        true, false, fraudulent, or manipulated.
       </p>
 
     `;
@@ -1046,6 +1072,7 @@ function runTriage() {
     }
 
   }
+
 
   if (matched) {
 
@@ -1208,6 +1235,7 @@ function renderTable() {
           record.category.startsWith("Translation");
 
       }
+
 
       const searchable = (
 
