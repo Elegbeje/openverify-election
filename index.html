@@ -1,0 +1,247 @@
+from pathlib import Path
+import html, json, textwrap
+
+# Ensure parent path exists or adjust to local working directory
+out = Path("./OpenVerify_AI_Prototype.html")
+out.parent.mkdir(parents=True, exist_ok=True)
+
+records = [
+    {
+        "id":"OV-001","page":"FAQ","editor":"RamzyM (WMF)","revision_id":"29236473",
+        "timestamp":"2025-09-08 10:52:54 UTC","summary":"add new FAQ for voters",
+        "minor":"Yes","length":"20535","parent":"29225160","change":"4900",
+        "category":"FAQ / process change","priority":"Review recommended",
+        "reason":"Substantive process/FAQ change; human review can confirm the supporting source and intended wording."
+    },
+    {
+        "id":"OV-002","page":"FAQ","editor":"RamzyM (WMF)","revision_id":"29162721",
+        "timestamp":"2025-08-21 16:41:31 UTC","summary":"add new FAQ for Change to the order of the selection process",
+        "minor":"Yes","length":"15366","parent":"28974997","change":"4666",
+        "category":"FAQ / process change","priority":"Review recommended",
+        "reason":"Large documented process-related change; review evidence/context rather than infer wrongdoing."
+    },
+    {
+        "id":"OV-003","page":"Candidate_application","editor":"RamzyM (WMF)","revision_id":"28766517",
+        "timestamp":"2025-05-22 14:29:57 UTC","summary":"Marked this version for translation",
+        "minor":"No","length":"6609","parent":"28766516","change":"12",
+        "category":"Translation / maintenance","priority":"Low",
+        "reason":"Explicit translation-maintenance action with minimal length change."
+    },
+    {
+        "id":"OV-004","page":"Candidate_application/de","editor":"RamzyM (WMF)","revision_id":"28767018",
+        "timestamp":"2025-05-22 14:53:46 UTC","summary":"Created page with German content",
+        "minor":"No","length":"6106","parent":"28767016","change":"12",
+        "category":"Translation / page creation","priority":"Low",
+        "reason":"Page creation/translation pattern; not itself evidence of a problem."
+    },
+    {
+        "id":"OV-005","page":"Candidate_application/ha","editor":"Xeno (WMF)","revision_id":"28767071",
+        "timestamp":"2025-05-22 14:58:19 UTC","summary":"Created page with Hausa content",
+        "minor":"No","length":"5502","parent":"28767069","change":"41",
+        "category":"Translation / page creation","priority":"Low",
+        "reason":"Page creation/translation pattern; not itself evidence of a problem."
+    },
+    {
+        "id":"OV-006","page":"Candidate_application/bn","editor":"Nettime Sujata","revision_id":"28771830",
+        "timestamp":"2025-05-23 09:49:59 UTC","summary":"Candidates must complete WikiLearn…",
+        "minor":"No","length":"8137","parent":"28771826","change":"143",
+        "category":"Translation / content maintenance","priority":"Low",
+        "reason":"Small incremental language-page change; no standalone review signal."
+    },
+    {
+        "id":"OV-007","page":"Candidate_application","editor":"Lane Rasberry","revision_id":"28915442",
+        "timestamp":"2025-06-29 05:13:24 UTC","summary":"publish",
+        "minor":"No","length":"22555","parent":"28911690","change":"17716",
+        "category":"Large change","priority":"Review recommended",
+        "reason":"Large change from the parent revision; reviewer should inspect the diff and context."
+    },
+    {
+        "id":"OV-008","page":"Candidate_application","editor":"ShahenWasHere","revision_id":"28943333",
+        "timestamp":"2025-07-06 13:56:24 UTC","summary":"Edited my responses and shortened them to adhere to the set word count.",
+        "minor":"No","length":"18824","parent":"28943289","change":"12696",
+        "category":"Large change","priority":"Review recommended",
+        "reason":"Large documented edit with an explicit explanation; verify the diff if needed."
+    },
+    {
+        "id":"OV-009","page":"Candidate_application","editor":"GreatPatent","revision_id":"28945376",
+        "timestamp":"2025-07-07 04:06:16 UTC","summary":"",
+        "minor":"No","length":"36123","parent":"28945336","change":"5370",
+        "category":"Large change","priority":"Review recommended",
+        "reason":"Large change without a detailed summary; inspect the revision diff and surrounding sequence."
+    },
+    {
+        "id":"OV-010","page":"FAQ","editor":"Stïnger","revision_id":"30178958",
+        "timestamp":"2026-03-05 17:42:41 UTC","summary":"Reverted change by Mesocyclonic93 to last version by SciWhiz12",
+        "minor":"Yes","length":"22041","parent":"30168613","change":"140",
+        "category":"Revert","priority":"Review recommended",
+        "reason":"Explicit revert. Review the before/after revisions and edit history; a revert is not itself evidence of wrongdoing."
+    },
+    {
+        "id":"OV-011","page":"Candidate_application","editor":"MdsShakil","revision_id":"30175416",
+        "timestamp":"2026-03-05 17:12:41 UTC","summary":"Reverted change by MdsShakil to last version by RamzyM (WMF)",
+        "minor":"Yes","length":"7886","parent":"30168728","change":"140",
+        "category":"Revert","priority":"Review recommended",
+        "reason":"Explicit revert. Review the before/after revisions and edit history; a revert is not itself evidence of wrongdoing."
+    },
+    {
+        "id":"OV-012","page":"Candidate_application","editor":"MdsShakil","revision_id":"30168728",
+        "timestamp":"2026-03-05 15:15:57 UTC","summary":"Закрываем проект",
+        "minor":"No","length":"8026","parent":"30168613","change":"134",
+        "category":"Normal / contextual edit","priority":"Low",
+        "reason":"Small contextual edit; meaning should be interpreted from the surrounding revision sequence."
+    },
+]
+
+data_json = json.dumps(records, ensure_ascii=False)
+
+html_doc = f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenVerify AI — Prototype</title>
+<style>
+:root {{ --bg:#f6f7f9; --card:#fff; --ink:#202122; --muted:#667085; --line:#d9dde3; --accent:#3366cc; --soft:#eef3ff; --low:#e9f7ef; --review:#fff4d6; }}
+*{{box-sizing:border-box}} body{{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}}
+header{{background:#202122;color:#fff;padding:22px 28px}} header h1{{margin:0 0 5px;font-size:26px}} header p{{margin:0;color:#d6d9dc}}
+main{{max-width:1180px;margin:24px auto;padding:0 18px}}
+.grid{{display:grid;grid-template-columns:1.35fr .9fr;gap:18px}} .card{{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}}
+h2{{font-size:18px;margin:0 0 14px}} h3{{font-size:15px;margin:0 0 8px}}
+label{{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}} textarea,input,select{{width:100%;border:1px solid #cfd4dc;border-radius:7px;padding:10px;font:inherit;background:#fff}}
+textarea{{min-height:120px;resize:vertical}} button{{border:0;border-radius:7px;padding:10px 14px;font-weight:600;cursor:pointer}} .primary{{background:var(--accent);color:#fff}} .secondary{{background:#eef0f2;color:#202122}}
+.row{{display:grid;grid-template-columns:1fr 1fr;gap:12px}} .actions{{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}}
+.signal{{padding:12px;border-radius:8px;background:#f8f9fa;border:1px solid var(--line);margin-top:10px}}
+.badge{{display:inline-block;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:700}} .low{{background:var(--low)}} .review{{background:var(--review)}}
+.stats{{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}} .stat{{background:#fff;border:1px solid var(--line);border-radius:999px;padding:14px;border-radius:9px;}} .stat b{{display:block;font-size:22px;margin-top:4px}}
+table{{width:100%;border-collapse:collapse;font-size:13px}} th,td{{border-bottom:1px solid var(--line);padding:9px 7px;text-align:left;vertical-align:top}} th{{background:#f8f9fa}} tr:hover{{background:#fafbfc}}
+.hidden{{display:none}} .note{{font-size:12px;color:var(--muted);line-height:1.5}} a{{color:var(--accent)}} .result-title{{font-size:22px;margin-bottom:4px}}
+@media(max-width:850px){{.grid{{grid-template-columns:1fr}}.stats{{grid-template-columns:1fr 1fr}}.row{{grid-template-columns:1fr}}}}
+</style>
+</head>
+<body>
+<header>
+  <h1>OpenVerify AI</h1>
+  <p>AI-assisted election information triage &amp; verification — clickable proof of concept</p>
+</header>
+<main>
+  <div class="stats">
+    <div class="stat"><span class="note">Records loaded</span><b id="nRecords">0</b></div>
+    <div class="stat"><span class="note">Review recommended</span><b id="nReview">0</b></div>
+    <div class="stat"><span class="note">Low priority</span><b id="nLow">0</b></div>
+    <div class="stat"><span class="note">Explicit reverts</span><b id="nReverts">0</b></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>1. Submit information for triage</h2>
+      <label>Paste an election-related claim, observation, or revision record</label>
+      <textarea id="input">A public election-process page received a substantial revision. Review whether the change is supported by the documented process and whether relevant evidence is available.</textarea>
+      <div class="row">
+        <div><label>Source</label><select id="source"><option>Wikimedia Quarry</option><option>Manual observation report</option><option>Fact-checking intake</option></select></div>
+        <div><label>Priority lens</label><select id="lens"><option>Change size + edit summary</option><option>Revert / conflict signal</option><option>Duplicate / similarity</option></select></div>
+      </div>
+      <div class="actions"><button class="primary" onclick="triage()">Run AI triage</button><button class="secondary" onclick="loadExample()">Load example</button></div>
+      <p class="note">Prototype behaviour is intentionally assistive: it highlights review signals but does not declare a claim true, false, fraudulent, or manipulated.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. AI triage result</h2>
+      <div id="triageEmpty" class="note">Run triage to see a structured recommendation.</div>
+      <div id="triageResult" class="hidden">
+        <div class="result-title" id="triageLabel"></div>
+        <p id="triageText"></p>
+        <div class="signal"><b>Suggested checks</b><ul id="checks"></ul></div>
+        <div class="actions"><button class="primary" onclick="openReview()">Send to human review</button></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <h2>3. Human verification queue</h2>
+    <div class="row">
+      <div><label>Filter</label><select id="filter" onchange="renderTable()"><option>All</option><option>Review recommended</option><option>Low</option><option>Revert</option><option>Large change</option><option>Translation / maintenance</option></select></div>
+      <div><label>Search</label><input id="search" oninput="renderTable()" placeholder="editor, page, summary..."></div>
+    </div>
+    <div style="overflow:auto;margin-top:12px">
+      <table><thead><tr><th>ID</th><th>Page</th><th>Editor</th><th>Change</th><th>Category</th><th>Priority</th><th>Human action</th></tr></thead><tbody id="tbody"></tbody></table>
+    </div>
+    <p class="note">Source dataset is derived from public revision records extracted via Quarry query #109467.</p>
+    <p><a href="https://quarry.wmcloud.org/query/109467" target="_blank" rel="noopener">Open Quarry data source →</a></p>
+  </section>
+
+  <section class="card hidden" id="reviewCard" style="margin-top:18px">
+    <h2>4. Human verification</h2>
+    <p id="reviewPrompt"></p>
+    <div class="row">
+      <div><label>Reviewer decision</label><select id="decision"><option>Needs more evidence</option><option>Verified — routine/benign context</option><option>Verified — substantive change</option><option>Duplicate/related information</option></select></div>
+      <div><label>Evidence checked</label><input id="evidence" placeholder="Revision diff, process page, official source..."></div>
+    </div>
+    <label style="margin-top:12px">Reviewer notes</label>
+    <textarea id="notes" style="min-height:80px" placeholder="Record what was checked and why the decision was made."></textarea>
+    <div class="actions"><button class="primary" onclick="saveReview()">Save verification</button></div>
+    <div id="saved" class="signal hidden"></div>
+  </section>
+</main>
+
+<script>
+const data = {data_json};
+
+function init(){{
+  document.getElementById('nRecords').textContent=data.length;
+  document.getElementById('nReview').textContent=data.filter(x=>x.priority==='Review recommended').length;
+  document.getElementById('nLow').textContent=data.filter(x=>x.priority==='Low').length;
+  document.getElementById('nReverts').textContent=data.filter(x=>x.category==='Revert').length;
+  renderTable();
+}}
+function renderTable(){{
+  const f=document.getElementById('filter').value.toLowerCase();
+  const q=document.getElementById('search').value.toLowerCase();
+  const rows=data.filter(x=>{{
+    const mf=f==='all'||x.priority.toLowerCase()===f||x.category.toLowerCase().includes(f);
+    const mq=!q||JSON.stringify(x).toLowerCase().includes(q);
+    return mf&&mq;
+  }});
+  document.getElementById('tbody').innerHTML=rows.map(x=>`<tr>
+    <td>${{x.id}}</td><td>${{x.page}}</td><td>${{x.editor}}</td>
+    <td>+${{x.change}} bytes</td><td>${{x.category}}</td>
+    <td><span class="badge ${{x.priority==='Low'?'low':'review'}}">${{x.priority}}</span></td>
+    <td><button class="secondary" onclick="reviewRecord('${{x.id}}')">Review</button></td>
+  </tr>`).join('');
+}}
+function triage(){{
+  const text=document.getElementById('input').value.trim();
+  const label=text.toLowerCase().includes('revert')?'Review recommended':'Review recommended';
+  document.getElementById('triageEmpty').classList.add('hidden');
+  document.getElementById('triageResult').classList.remove('hidden');
+  document.getElementById('triageLabel').innerHTML='<span class="badge review">'+label+'</span>';
+  document.getElementById('triageText').textContent='The submission contains a review signal, but the signal is not a finding of wrongdoing. A human reviewer should inspect the underlying record and evidence before reaching a conclusion.';
+  document.getElementById('checks').innerHTML='<li>Inspect the revision diff and parent revision.</li><li>Check the edit summary and surrounding revision sequence.</li><li>Compare against the relevant public process/documentation.</li><li>Record the evidence supporting the human decision.</li>';
+}}
+function loadExample(){{
+  const x=data.find(r=>r.category==='Revert')||data[0];
+  document.getElementById('input').value=`${{x.page}} — revision ${{x.revision_id}} by ${{x.editor}}. Edit summary: ${{x.summary||'(none)'}}. Length change: ${{x.change}} bytes.`;
+}}
+function openReview(){{
+  document.getElementById('reviewCard').classList.remove('hidden');
+  document.getElementById('reviewPrompt').textContent='Human review opened. Inspect the source record, then record the evidence and decision below.';
+  window.scrollTo({{top:document.getElementById('reviewCard').offsetTop-20,behavior:'smooth'}});
+}}
+function reviewRecord(id){{
+  const x=data.find(r=>r.id===id);
+  document.getElementById('reviewCard').classList.remove('hidden');
+  document.getElementById('reviewPrompt').textContent=`${{x.id}}: ${{x.page}} / ${{x.editor}} / revision ${{x.revision_id}}. Triage reason: ${{x.reason}}`;
+  window.scrollTo({{top:document.getElementById('reviewCard').offsetTop-20,behavior:'smooth'}});
+}}
+function saveReview(){{
+  const d=document.getElementById('decision').value;
+  const e=document.getElementById('evidence').value||'No evidence source entered yet.';
+  document.getElementById('saved').classList.remove('hidden');
+  document.getElementById('saved').textContent=`Verification recorded in this browser session: ${{d}}. Evidence: ${{e}}`;
+}}
+init();
+</script>
+</body>
+</html>"""
+
+out.write_text(html_doc, encoding="utf-8")
+print(f"Created: {out.resolve()}")
