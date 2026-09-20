@@ -3,10 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>OpenVerify AI — Election Information Triage</title>
 
 <style>
+    :root {
+        --bg: #f4f6f8;
+        --card: #ffffff;
+        --text: #17202a;
+        --muted: #667085;
+        --border: #d9dee5;
+        --green: #14866d;
+        --green-dark: #0d604e;
+        --green-light: #e8f5f0;
+        --orange: #b54708;
+        --orange-light: #fff4e5;
+        --red: #b42318;
+        --red-light: #fef0ef;
+        --blue: #175cd3;
+        --blue-light: #eff8ff;
+        --shadow: 0 3px 12px rgba(0,0,0,0.06);
+    }
+
     * {
         box-sizing: border-box;
     }
@@ -14,247 +31,310 @@
     body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
-        background: #f6f8fa;
-        color: #202122;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
     }
 
     header {
-        background: #202122;
-        color: white;
-        padding: 28px 20px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--border);
+        padding: 22px 30px;
     }
 
-    header .container {
-        max-width: 1200px;
+    .header-inner {
+        max-width: 1250px;
         margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
     }
 
-    header h1 {
-        margin: 0 0 8px;
-        font-size: 32px;
-    }
-
-    header p {
+    .brand h1 {
         margin: 0;
-        color: #c8ccd1;
-        font-size: 15px;
+        font-size: 25px;
+        color: var(--green-dark);
     }
 
-    .container {
-        max-width: 1200px;
-        margin: auto;
-        padding: 24px 20px;
+    .brand p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .badge {
+        background: var(--green-light);
+        color: var(--green-dark);
+        border: 1px solid #b9dfd2;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    main {
+        max-width: 1250px;
+        margin: 25px auto 60px;
+        padding: 0 18px;
     }
 
     .notice {
-        background: #fff8e6;
-        border-left: 5px solid #a66b00;
-        padding: 15px 18px;
-        margin-bottom: 22px;
-        border-radius: 5px;
-        line-height: 1.5;
+        background: #fffdf5;
+        border: 1px solid #f0df9f;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
     }
 
     .stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-bottom: 25px;
+        gap: 14px;
+        margin-bottom: 22px;
     }
 
     .stat {
-        background: white;
-        border: 1px solid #eaecf0;
-        border-radius: 8px;
-        padding: 18px;
-        box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    }
-
-    .stat .number {
-        font-size: 30px;
-        font-weight: bold;
-        margin-bottom: 5px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 17px;
+        box-shadow: var(--shadow);
     }
 
     .stat .label {
-        color: #54595d;
-        font-size: 14px;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 5px;
+    }
+
+    .stat .value {
+        font-size: 25px;
+        font-weight: bold;
     }
 
     .section {
-        background: white;
-        border: 1px solid #eaecf0;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        overflow: hidden;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
     }
 
-    .section-header {
-        padding: 17px 20px;
-        border-bottom: 1px solid #eaecf0;
-        background: #f8f9fa;
+    .section h2 {
+        margin: 0 0 5px;
+        font-size: 20px;
     }
 
-    .section-header h2 {
-        margin: 0;
-        font-size: 21px;
-    }
-
-    .section-header p {
-        margin: 6px 0 0;
-        color: #54595d;
+    .section-intro {
+        color: var(--muted);
         font-size: 14px;
-    }
-
-    .section-body {
-        padding: 20px;
+        margin-top: 0;
+        margin-bottom: 18px;
     }
 
     label {
         display: block;
+        font-size: 13px;
         font-weight: bold;
-        margin-bottom: 7px;
-        font-size: 14px;
+        margin-bottom: 6px;
     }
 
     textarea,
     select,
     input {
         width: 100%;
-        padding: 11px;
-        border: 1px solid #a2a9b1;
-        border-radius: 5px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 11px 12px;
+        font-family: inherit;
         font-size: 14px;
-        background: white;
+        background: #fff;
     }
 
     textarea {
-        min-height: 125px;
+        min-height: 115px;
         resize: vertical;
+    }
+
+    textarea:focus,
+    select:focus,
+    input:focus {
+        outline: none;
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px rgba(20,134,109,0.10);
     }
 
     .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
-        margin-top: 18px;
+        gap: 16px;
+        margin-top: 15px;
+    }
+
+    .full {
+        grid-column: 1 / -1;
     }
 
     .button-row {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 18px;
+        margin-top: 17px;
     }
 
     button {
-        border: none;
-        border-radius: 5px;
-        padding: 11px 18px;
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 15px;
         font-weight: bold;
         cursor: pointer;
-        font-size: 14px;
+        font-family: inherit;
     }
 
-    button:hover {
-        opacity: .9;
-    }
-
-    .primary {
-        background: #36c;
+    .btn-primary {
+        background: var(--green);
         color: white;
     }
 
-    .secondary {
-        background: #eaecf0;
-        color: #202122;
+    .btn-primary:hover {
+        background: var(--green-dark);
     }
 
-    .real-world {
-        background: #14866d;
+    .btn-secondary {
+        background: #eef2f6;
+        color: #344054;
+        border: 1px solid var(--border);
+    }
+
+    .btn-blue {
+        background: var(--blue);
+        color: white;
+    }
+
+    .btn-danger {
+        background: var(--red);
         color: white;
     }
 
     .result {
-        display: none;
-        border-radius: 7px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .result-header {
+        padding: 16px 18px;
+        background: #f8fafb;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .result-status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .status-review {
+        background: var(--orange-light);
+        color: var(--orange);
+    }
+
+    .status-low {
+        background: var(--green-light);
+        color: var(--green-dark);
+    }
+
+    .status-revert {
+        background: var(--red-light);
+        color: var(--red);
+    }
+
+    .result-header h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .result-body {
         padding: 18px;
-        margin-top: 18px;
-    }
-
-    .result.review {
-        display: block;
-        background: #fff8e6;
-        border: 1px solid #c8a951;
-    }
-
-    .result.low {
-        display: block;
-        background: #f0f7ff;
-        border: 1px solid #a2c4e8;
-    }
-
-    .result h3 {
-        margin-top: 0;
     }
 
     .result-grid {
         display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 9px 15px;
-        font-size: 14px;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
     }
 
-    .result-grid strong {
-        color: #54595d;
-    }
-
-    .claim-box {
+    .result-item {
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 12px;
         background: #fff;
-        border: 1px solid #c8ccd1;
-        border-radius: 6px;
-        padding: 13px;
-        margin-bottom: 17px;
-        line-height: 1.5;
     }
 
-    .question-box {
-        margin-top: 20px;
-        padding-top: 17px;
-        border-top: 1px solid #c8ccd1;
+    .result-item strong {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
     }
 
-    .question-box ol {
-        margin-top: 10px;
-        padding-left: 23px;
-    }
-
-    .question-box li {
-        margin-bottom: 8px;
+    .result-item p {
+        margin: 0;
+        font-size: 14px;
     }
 
     .source-box {
         margin-top: 16px;
+        background: var(--blue-light);
+        border: 1px solid #cfe4ff;
+        border-radius: 9px;
         padding: 13px;
-        background: #f8f9fa;
-        border-left: 4px solid #36c;
-        line-height: 1.5;
+        font-size: 14px;
     }
 
     .source-box a {
-        color: #36c;
-        word-break: break-word;
+        color: var(--blue);
+        font-weight: bold;
     }
 
-    .queue-controls {
+    .questions {
+        margin-top: 17px;
+    }
+
+    .questions h4 {
+        margin: 0 0 8px;
+        font-size: 14px;
+    }
+
+    .questions ol {
+        margin: 0;
+        padding-left: 22px;
+        font-size: 14px;
+    }
+
+    .questions li {
+        margin-bottom: 5px;
+    }
+
+    .queue-tools {
         display: grid;
-        grid-template-columns: 200px 1fr;
-        gap: 12px;
+        grid-template-columns: 180px 1fr;
+        gap: 10px;
         margin-bottom: 15px;
     }
 
-    .table-wrapper {
+    .table-wrap {
         overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
     }
 
     table {
@@ -265,721 +345,346 @@
 
     th,
     td {
-        border-bottom: 1px solid #eaecf0;
         padding: 11px 10px;
+        border-bottom: 1px solid var(--border);
         text-align: left;
         vertical-align: top;
         font-size: 13px;
     }
 
     th {
-        background: #f8f9fa;
-        font-weight: bold;
+        background: #f8fafb;
+        color: #475467;
+        font-size: 12px;
     }
 
-    .badge {
+    tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .pill {
         display: inline-block;
+        border-radius: 20px;
         padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: bold;
     }
 
-    .badge-review {
-        background: #fff1c7;
-        color: #795600;
+    .pill-review {
+        background: var(--orange-light);
+        color: var(--orange);
     }
 
-    .badge-low {
-        background: #eaf3ff;
-        color: #174a7e;
+    .pill-low {
+        background: var(--green-light);
+        color: var(--green-dark);
     }
 
-    .badge-revert {
-        background: #fee7e7;
-        color: #8a1717;
+    .pill-real {
+        background: var(--blue-light);
+        color: var(--blue);
     }
 
-    .badge-real {
-        background: #e3f5ef;
-        color: #075c48;
+    .pill-revert {
+        background: var(--red-light);
+        color: var(--red);
     }
 
-    .small-button {
+    .review-btn {
         padding: 7px 10px;
-        font-size: 12px;
-        background: #36c;
+        font-size: 11px;
+        background: var(--blue);
         color: white;
     }
 
-    .verification-form {
-        display: none;
-    }
-
-    .verification-note {
-        background: #f8f9fa;
-        border-left: 4px solid #36c;
-        padding: 13px;
-        margin-bottom: 18px;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    .success-message {
-        display: none;
-        background: #eaf7ee;
-        border: 1px solid #36a05c;
-        color: #155724;
-        padding: 13px;
-        border-radius: 5px;
-        margin-top: 15px;
-    }
-
     .empty {
-        color: #72777d;
-        padding: 20px 0;
         text-align: center;
-    }
-
-    .session-note {
-        font-size: 12px;
-        color: #72777d;
-        margin-top: 12px;
-    }
-
-    footer {
-        text-align: center;
-        color: #72777d;
-        font-size: 13px;
+        color: var(--muted);
         padding: 25px;
     }
 
-    @media (max-width: 800px) {
+    .verification {
+        display: none;
+    }
 
+    .verification.active {
+        display: block;
+    }
+
+    .session-note {
+        margin-top: 13px;
+        font-size: 12px;
+        color: var(--muted);
+        background: #f8fafb;
+        padding: 9px 11px;
+        border-radius: 7px;
+    }
+
+    footer {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 0 18px 30px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+    }
+
+    @media (max-width: 800px) {
         .stats {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .queue-controls {
-            grid-template-columns: 1fr;
-        }
-
+        .form-grid,
         .result-grid {
             grid-template-columns: 1fr;
+        }
+
+        .full {
+            grid-column: auto;
+        }
+
+        .queue-tools {
+            grid-template-columns: 1fr;
+        }
+
+        .header-inner {
+            align-items: flex-start;
+            flex-direction: column;
         }
     }
 
     @media (max-width: 500px) {
-
         .stats {
             grid-template-columns: 1fr;
         }
 
-        header h1 {
-            font-size: 25px;
+        main {
+            padding: 0 10px;
+        }
+
+        .section {
+            padding: 16px;
         }
     }
 </style>
 </head>
 
-
 <body>
 
 <header>
-
-    <div class="container">
-
-        <h1>OpenVerify AI</h1>
-
-        <p>
-            AI-assisted election information triage & verification —
-            clickable proof of concept
-        </p>
-
+    <div class="header-inner">
+        <div class="brand">
+            <h1>OpenVerify AI</h1>
+            <p>AI-assisted election information triage & verification — clickable proof of concept</p>
+        </div>
+        <div class="badge">Human-in-the-loop</div>
     </div>
-
 </header>
 
-
-<main class="container">
-
-
-    <!-- =====================================================
-         NOTICE
-         ===================================================== -->
+<main>
 
     <div class="notice">
-
-        <strong>Human-in-the-loop:</strong>
-
-        OpenVerify AI does not independently declare information
-        true, false, fraudulent, or manipulated.
-
-        It identifies claims and information that may require
-        human verification and provides a structured workflow
-        for checking them against evidence.
-
+        <strong>Important:</strong>
+        OpenVerify AI assists with information triage. It does not independently declare
+        information true, false, fraudulent, manipulated, or politically correct.
+        Real-world claims are routed for evidence-based human verification.
     </div>
 
-
-    <!-- =====================================================
-         STATISTICS
-         ===================================================== -->
-
+    <!-- STATS -->
     <div class="stats">
-
         <div class="stat">
-
-            <div
-                class="number"
-                id="totalRecords"
-            >
-                12
-            </div>
-
-            <div class="label">
-                Records loaded
-            </div>
-
+            <div class="label">Records loaded</div>
+            <div class="value" id="statTotal">0</div>
         </div>
 
-
         <div class="stat">
-
-            <div
-                class="number"
-                id="reviewCount"
-            >
-                7
-            </div>
-
-            <div class="label">
-                Review recommended
-            </div>
-
+            <div class="label">Review recommended</div>
+            <div class="value" id="statReview">0</div>
         </div>
 
-
         <div class="stat">
-
-            <div
-                class="number"
-                id="lowCount"
-            >
-                5
-            </div>
-
-            <div class="label">
-                Low priority
-            </div>
-
+            <div class="label">Low priority</div>
+            <div class="value" id="statLow">0</div>
         </div>
 
-
         <div class="stat">
-
-            <div
-                class="number"
-                id="revertCount"
-            >
-                2
-            </div>
-
-            <div class="label">
-                Explicit reverts
-            </div>
-
+            <div class="label">Explicit reverts</div>
+            <div class="value" id="statRevert">0</div>
         </div>
-
     </div>
 
+    <!-- STEP 1 -->
+    <section class="section">
+        <h2>Step 1 — Submit information for triage</h2>
+        <p class="section-intro">
+            Enter a Wikimedia change, election claim, candidate-count claim, death figure,
+            or other information that requires verification.
+        </p>
 
+        <div class="form-grid">
 
-    <!-- =====================================================
-         STEP 1
-         ===================================================== -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>
-                Step 1 — Submit information for triage
-            </h2>
-
-            <p>
-                Enter an information change, claim, revision,
-                election-related statement, or numerical claim.
-            </p>
-
-        </div>
-
-
-        <div class="section-body">
-
-            <label for="submission">
-                Information / claim
-            </label>
-
-            <textarea
-                id="submission"
-                placeholder="Example: 50 people died in the 2026 Osun election."
-            ></textarea>
-
-
-            <div class="form-grid">
-
-
-                <div>
-
-                    <label for="source">
-                        Source type
-                    </label>
-
-                    <select id="source">
-
-                        <option value="Wikimedia public revision data">
-                            Wikimedia public revision data
-                        </option>
-
-                        <option value="Election observation report">
-                            Election observation report
-                        </option>
-
-                        <option value="Fact-checking submission">
-                            Fact-checking submission
-                        </option>
-
-                        <option value="Election results/data record">
-                            Election results/data record
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div>
-
-                    <label for="lens">
-                        Priority lens
-                    </label>
-
-                    <select id="lens">
-
-                        <option value="Process change">
-                            Process change
-                        </option>
-
-                        <option value="Large change">
-                            Large change
-                        </option>
-
-                        <option value="Revert">
-                            Revert
-                        </option>
-
-                        <option value="Conflicting information">
-                            Conflicting information
-                        </option>
-
-                        <option value="Duplicate information">
-                            Duplicate information
-                        </option>
-
-                    </select>
-
-                </div>
-
-
+            <div class="full">
+                <label for="submission">Information / claim</label>
+                <textarea id="submission"
+                    placeholder="Example: How many people are running for the 2027 Presidential Election?"></textarea>
             </div>
 
-
-            <!-- THREE MAIN BUTTONS -->
-
-            <div class="button-row">
-
-                <button
-                    class="primary"
-                    onclick="runTriage()"
-                >
-                    Run AI triage
-                </button>
-
-
-                <button
-                    class="secondary"
-                    onclick="loadExample()"
-                >
-                    Load example
-                </button>
-
-
-                <button
-                    class="real-world"
-                    onclick="loadRealWorldClaim()"
-                >
-                    Real-world claim
-                </button>
-
-            </div>
-
-
-            <div
-                id="triageResult"
-                class="result"
-            ></div>
-
-
-            <div class="session-note">
-                Session results are temporary and disappear when
-                the page is refreshed.
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         STEP 2
-         ===================================================== -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>
-                Step 2 — AI-assisted triage result
-            </h2>
-
-            <p>
-                The result identifies the issue and guides the
-                human verification process.
-            </p>
-
-        </div>
-
-
-        <div class="section-body">
-
-            <div
-                id="resultPlaceholder"
-                class="empty"
-            >
-                No triage result yet.
-                Submit information above.
-            </div>
-
-
-            <div
-                id="detailedResult"
-                style="display:none;"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         STEP 3
-         ===================================================== -->
-
-    <div class="section">
-
-        <div class="section-header">
-
-            <h2>
-                Step 3 — Human verification queue
-            </h2>
-
-            <p>
-                Claims requiring human verification are placed here.
-            </p>
-
-        </div>
-
-
-        <div class="section-body">
-
-
-            <div class="queue-controls">
-
-
-                <select
-                    id="queueFilter"
-                    onchange="renderTable()"
-                >
-
-                    <option value="all">
-                        All records
-                    </option>
-
-                    <option value="review">
-                        Review recommended
-                    </option>
-
-                    <option value="low">
-                        Low priority
-                    </option>
-
-                    <option value="real">
-                        Real-world claims
-                    </option>
-
-                    <option value="revert">
-                        Explicit reverts
-                    </option>
-
+            <div>
+                <label for="source">Source type</label>
+                <select id="source">
+                    <option>Wikimedia public revision data</option>
+                    <option>Election observation report</option>
+                    <option>Fact-checking submission</option>
+                    <option>Election results/data record</option>
                 </select>
-
-
-                <input
-                    id="queueSearch"
-                    type="text"
-                    placeholder="Search ID, page, claim, editor or source..."
-                    oninput="renderTable()"
-                >
-
             </div>
 
-
-            <div class="table-wrapper">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>ID</th>
-
-                            <th>
-                                Page / Claim
-                            </th>
-
-                            <th>
-                                Editor / Source
-                            </th>
-
-                            <th>
-                                Change
-                            </th>
-
-                            <th>
-                                Category
-                            </th>
-
-                            <th>
-                                Priority
-                            </th>
-
-                            <th>
-                                Human action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="queueBody"></tbody>
-
-                </table>
-
+            <div>
+                <label for="lens">Priority lens</label>
+                <select id="lens">
+                    <option>Process change</option>
+                    <option>Large change</option>
+                    <option>Revert</option>
+                    <option>Conflicting information</option>
+                    <option>Duplicate information</option>
+                </select>
             </div>
 
         </div>
 
-    </div>
+        <div class="button-row">
+            <button class="btn-primary" onclick="runTriage()">Run AI triage</button>
+            <button class="btn-secondary" onclick="loadExample()">Load example</button>
+            <button class="btn-blue" onclick="loadRealWorldClaim()">Real-world claim</button>
+        </div>
+    </section>
 
+    <!-- STEP 2 -->
+    <section class="section">
+        <h2>Step 2 — AI-assisted triage result</h2>
+        <p class="section-intro">
+            The result identifies the type of claim, suggests priority, points to relevant
+            evidence and generates questions for a human verifier.
+        </p>
 
+        <div id="triageResult">
+            <div class="empty">
+                No triage result yet. Submit information above.
+            </div>
+        </div>
+    </section>
 
-    <!-- =====================================================
-         STEP 4
-         ===================================================== -->
+    <!-- STEP 3 -->
+    <section class="section" id="verificationQueue">
+        <h2>Step 3 — Human verification queue</h2>
+        <p class="section-intro">
+            Items recommended for review are placed here for human assessment.
+        </p>
 
-    <div class="section">
+        <div class="queue-tools">
+            <select id="queueFilter" onchange="renderTable()">
+                <option value="all">All records</option>
+                <option value="review">Review recommended</option>
+                <option value="low">Low priority</option>
+                <option value="real">Real-world claims</option>
+                <option value="revert">Explicit reverts</option>
+            </select>
 
-        <div class="section-header">
-
-            <h2>
-                Step 4 — Human verification
-            </h2>
-
-            <p>
-                Review the available evidence and record the
-                human reviewer's decision.
-            </p>
-
+            <input id="queueSearch"
+                type="text"
+                placeholder="Search page, claim, editor or source..."
+                oninput="renderTable()">
         </div>
 
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Page / Claim</th>
+                        <th>Editor / Source</th>
+                        <th>Change</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Human action</th>
+                    </tr>
+                </thead>
 
-        <div class="section-body">
+                <tbody id="queueBody"></tbody>
+            </table>
+        </div>
+    </section>
 
+    <!-- STEP 4 -->
+    <section class="section verification" id="verificationSection">
+        <h2>Step 4 — Human verification</h2>
+        <p class="section-intro">
+            The reviewer records the evidence and decision. This is the final human
+            verification stage of the prototype.
+        </p>
 
-            <div
-                id="verificationPlaceholder"
-                class="empty"
-            >
-                Select "Review" from the queue to begin
-                human verification.
+        <div id="verificationTarget"
+             class="notice">
+        </div>
+
+        <div class="form-grid">
+
+            <div>
+                <label for="reviewDecision">Reviewer decision</label>
+                <select id="reviewDecision">
+                    <option value="">Select decision</option>
+                    <option>Verified / supported by evidence</option>
+                    <option>Not supported by evidence</option>
+                    <option>Partially supported / requires qualification</option>
+                    <option>Insufficient evidence</option>
+                    <option>Duplicate / already covered</option>
+                </select>
             </div>
 
+            <div>
+                <label for="evidenceChecked">Evidence checked</label>
+                <input id="evidenceChecked"
+                       placeholder="Example: INEC candidate list, Constitution, police statement">
+            </div>
 
-            <div
-                id="verificationForm"
-                class="verification-form"
-            >
-
-
-                <div
-                    id="verificationContext"
-                    class="verification-note"
-                ></div>
-
-
-                <div class="form-grid">
-
-
-                    <div>
-
-                        <label for="decision">
-                            Reviewer decision
-                        </label>
-
-                        <select id="decision">
-
-                            <option value="">
-                                Select a decision
-                            </option>
-
-                            <option value="Verified">
-                                Verified
-                            </option>
-
-                            <option value="Unverified / misleading">
-                                Unverified / misleading
-                            </option>
-
-                            <option value="Requires further review">
-                                Requires further review
-                            </option>
-
-                            <option value="Evidence supports the change">
-                                Evidence supports the change
-                            </option>
-
-                            <option value="Evidence insufficient">
-                                Evidence insufficient
-                            </option>
-
-                            <option value="Contextual / routine activity">
-                                Contextual / routine activity
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div>
-
-                        <label for="evidence">
-                            Evidence checked
-                        </label>
-
-                        <input
-                            id="evidence"
-                            type="text"
-                            placeholder="Source, document, revision history, official record..."
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div style="margin-top:18px;">
-
-                    <label for="notes">
-                        Verification notes
-                    </label>
-
-                    <textarea
-                        id="notes"
-                        placeholder="Explain what was checked and why the decision was reached..."
-                    ></textarea>
-
-                </div>
-
-
-                <div class="button-row">
-
-                    <button
-                        class="primary"
-                        onclick="saveVerification()"
-                    >
-                        Save verification
-                    </button>
-
-
-                    <button
-                        class="secondary"
-                        onclick="cancelVerification()"
-                    >
-                        Cancel
-                    </button>
-
-                </div>
-
-
-                <div
-                    id="successMessage"
-                    class="success-message"
-                ></div>
-
-
+            <div class="full">
+                <label for="reviewNotes">Reviewer notes</label>
+                <textarea id="reviewNotes"
+                    placeholder="Explain what was checked, what the source says, and any limitations."></textarea>
             </div>
 
         </div>
 
-    </div>
+        <div class="button-row">
+            <button class="btn-primary" onclick="saveVerification()">Save verification</button>
+            <button class="btn-secondary" onclick="cancelVerification()">Cancel</button>
+        </div>
+
+        <div class="session-note">
+            Session note: verification decisions are held only in memory for this prototype.
+            Refreshing the page clears user-generated claims and verification results.
+        </div>
+    </section>
 
 </main>
 
-
 <footer>
-
-    OpenVerify AI — Proof of concept for AI-assisted
-    election information triage.
-
-    Verification remains a human responsibility.
-
+    OpenVerify AI proof of concept · Wikimedia / election information triage ·
+    Human verification remains necessary.
 </footer>
-
-
 
 <script>
 
 /* =========================================================
-   WIKIMEDIA / QUARRY DEMONSTRATION DATA
-   ========================================================= */
+   STATIC WIKIMEDIA / QUARRY DATA
+========================================================= */
 
-const records = [
+const initialRecords = [
 
     {
         id: "OV-001",
         page: "FAQ",
         editor: "RamzyM (WMF)",
-        revision: "29236473",
         change: "Revision 29236473",
         category: "Process change",
         priority: "Review recommended",
@@ -990,7 +695,6 @@ const records = [
         id: "OV-002",
         page: "FAQ",
         editor: "RamzyM (WMF)",
-        revision: "29162721",
         change: "Revision 29162721",
         category: "Process change",
         priority: "Review recommended",
@@ -1001,10 +705,9 @@ const records = [
         id: "OV-003",
         page: "Candidate_application",
         editor: "RamzyM (WMF)",
-        revision: "28766517",
-        change: "Translation",
+        change: "Revision 28766517",
         category: "Translation",
-        priority: "Low",
+        priority: "Low priority",
         type: "wikimedia"
     },
 
@@ -1012,10 +715,9 @@ const records = [
         id: "OV-004",
         page: "Candidate_application/de",
         editor: "RamzyM (WMF)",
-        revision: "28767018",
-        change: "Translation",
+        change: "Revision 28767018",
         category: "Translation",
-        priority: "Low",
+        priority: "Low priority",
         type: "wikimedia"
     },
 
@@ -1023,10 +725,9 @@ const records = [
         id: "OV-005",
         page: "Candidate_application/ha",
         editor: "Xeno (WMF)",
-        revision: "28767071",
-        change: "Translation",
+        change: "Revision 28767071",
         category: "Translation",
-        priority: "Low",
+        priority: "Low priority",
         type: "wikimedia"
     },
 
@@ -1034,10 +735,9 @@ const records = [
         id: "OV-006",
         page: "Candidate_application/bn",
         editor: "Nettime Sujata",
-        revision: "28771830",
-        change: "Translation",
+        change: "Revision 28771830",
         category: "Translation",
-        priority: "Low",
+        priority: "Low priority",
         type: "wikimedia"
     },
 
@@ -1045,8 +745,7 @@ const records = [
         id: "OV-007",
         page: "Candidate_application",
         editor: "Lane Rasberry",
-        revision: "28915442",
-        change: "Large change",
+        change: "Revision 28915442",
         category: "Large change",
         priority: "Review recommended",
         type: "wikimedia"
@@ -1056,8 +755,7 @@ const records = [
         id: "OV-008",
         page: "Candidate_application",
         editor: "ShahenWasHere",
-        revision: "28943333",
-        change: "Large change",
+        change: "Revision 28943333",
         category: "Large change",
         priority: "Review recommended",
         type: "wikimedia"
@@ -1067,8 +765,7 @@ const records = [
         id: "OV-009",
         page: "Candidate_application",
         editor: "GreatPatent",
-        revision: "28945376",
-        change: "Large change",
+        change: "Revision 28945376",
         category: "Large change",
         priority: "Review recommended",
         type: "wikimedia"
@@ -1078,8 +775,7 @@ const records = [
         id: "OV-010",
         page: "FAQ",
         editor: "Stïnger",
-        revision: "30178958",
-        change: "Explicit revert",
+        change: "Revision 30178958",
         category: "Explicit revert",
         priority: "Review recommended",
         type: "wikimedia"
@@ -1089,8 +785,7 @@ const records = [
         id: "OV-011",
         page: "Candidate_application",
         editor: "MdsShakil",
-        revision: "30175416",
-        change: "Explicit revert",
+        change: "Revision 30175416",
         category: "Explicit revert",
         priority: "Review recommended",
         type: "wikimedia"
@@ -1100,20 +795,18 @@ const records = [
         id: "OV-012",
         page: "Candidate_application",
         editor: "MdsShakil",
-        revision: "30168728",
-        change: "Normal/contextual edit",
+        change: "Revision 30168728",
         category: "Normal/contextual edit",
-        priority: "Low",
+        priority: "Low priority",
         type: "wikimedia"
     }
 
 ];
 
 
-
 /* =========================================================
-   REAL-WORLD SCENARIOS
-   ========================================================= */
+   REAL-WORLD CLAIM SCENARIOS
+========================================================= */
 
 const realWorldClaims = [
 
@@ -1142,19 +835,12 @@ const realWorldClaims = [
             "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
 
         questions: [
-
-            "Does Section 135 specify a four-year presidential term?",
-
+            "Does Section 135 specify a four-year term for the President?",
             "When does the presidential term begin?",
-
-            "What provisions address re-election?",
-
-            "Does this provision apply specifically to the President?",
-
-            "Should presidential tenure be generalized to other political offices?"
-
+            "How does re-election affect the number of terms a President may serve?",
+            "Does the provision apply specifically to the President rather than every political office holder?",
+            "Does the wording of the claim accurately reflect the constitutional provision?"
         ]
-
     },
 
 
@@ -1177,63 +863,117 @@ const realWorldClaims = [
             "Constitutional tenure provisions are attached to particular offices. The claim therefore needs to be checked against the specific office being discussed.",
 
         source:
-            "Constitution of the Federal Republic of Nigeria — relevant provisions include Sections 135, 137, 180 and 182.",
+            "Constitution of the Federal Republic of Nigeria — relevant provisions include Sections 135, 137, 180 and 182, depending on the office.",
 
         sourceUrl:
             "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
 
         questions: [
-
-            "Which political office is being discussed?",
-
+            "Which specific political office is the claim referring to?",
             "What tenure does the Constitution prescribe for that office?",
-
-            "Does the office have a two-term limit?",
-
+            "Does the Constitution impose a two-term limit on that office?",
             "Does the rule apply to elected offices only?",
-
-            "Are appointed political offices being included?",
-
-            "Is another law applicable to the particular office?",
-
-            "Could the use of 'every' make the claim too broad?"
-
+            "Are appointed political office holders included?",
+            "Are there political offices with tenure rules different from four years?",
+            "Which constitutional section or other law establishes the rule for that specific office?",
+            "Is the phrase 'every political office holder' too broad for the evidence?"
         ]
+    },
 
+
+    {
+        id: "RWC-003",
+
+        claim:
+            "How many people are running for the 2027 Presidential Election in Nigeria?",
+
+        category:
+            "Real-world claim / presidential candidate count",
+
+        priority:
+            "Review recommended",
+
+        expectedStatus:
+            "Verify against the latest official INEC candidate list",
+
+        reference:
+            "INEC publishes the official candidate information for the 2027 Presidential and National Assembly elections. Candidate counts should be checked against the latest official list because nominations, withdrawals or replacements may affect the list.",
+
+        source:
+            "Independent National Electoral Commission (INEC) — Presidential and National Assembly Elections for January 2027",
+
+        sourceUrl:
+            "https://inecnigeria.org/press/presidential-national-assembly-elections-jan-2027-presidential",
+
+        questions: [
+            "What is the latest official INEC list of presidential candidates?",
+            "How many presidential candidates are listed by INEC?",
+            "What is the publication date of the list?",
+            "Does the list contain presidential candidates only, rather than vice-presidential candidates?",
+            "Have any candidates withdrawn or been replaced after the list was published?",
+            "Does the current figure match the latest INEC publication?",
+            "Is the question asking for nominated candidates, final candidates, or announced aspirants?"
+        ]
+    },
+
+
+    {
+        id: "RWC-004",
+
+        claim:
+            "How many people died in connection with the 2026 Osun election?",
+
+        category:
+            "Real-world claim / election-related death figure",
+
+        priority:
+            "Review recommended",
+
+        expectedStatus:
+            "Requires dated and attributable evidence",
+
+        reference:
+            "Reported death figures can differ depending on the period covered, whether the source refers to pre-election violence or election-day incidents, and whether individual incidents have been independently confirmed.",
+
+        source:
+            "INEC election/security information and attributable election reporting",
+
+        sourceUrl:
+            "https://www.inecnigeria.org/",
+
+        questions: [
+            "What exact period does the claimed death figure cover?",
+            "Does it refer to pre-election violence, election day, or the wider election period?",
+            "Who originally reported the figure?",
+            "Was the figure confirmed by police, INEC, hospitals, government authorities, or another identifiable source?",
+            "Are all reported deaths established as election-related?",
+            "Does the source provide specific incidents, locations, dates or names?",
+            "Could multiple reports be counting the same incidents?",
+            "Is the figure an official count, estimate, or attributed claim?",
+            "When was the figure published?",
+            "Have subsequent reports revised the figure?"
+        ]
     }
 
 ];
 
 
-
 /* =========================================================
    SESSION STATE
-   ========================================================= */
+========================================================= */
 
 let sessionClaims = [];
-
 let verificationResults = [];
-
-let selectedRecord = null;
-
-let selectedClaim = null;
-
+let currentVerificationId = null;
 
 
 /* =========================================================
-   HTML ESCAPING
-   ========================================================= */
+   HELPERS
+========================================================= */
 
 function escapeHTML(value) {
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
-    }
-
-    return String(value)
+    return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -1243,401 +983,205 @@ function escapeHTML(value) {
 }
 
 
-
-/* =========================================================
-   GET ALL RECORDS
-   ========================================================= */
-
 function getAllRecords() {
 
-    return records.concat(sessionClaims);
+    return [
+        ...initialRecords,
+        ...sessionClaims
+    ];
 
 }
 
-
-
-/* =========================================================
-   UPDATE STATISTICS
-   ========================================================= */
 
 function updateStats() {
 
-    const all =
-        getAllRecords();
+    const records = getAllRecords();
 
-    const review =
-        all.filter(
-            r =>
-                r.priority ===
-                "Review recommended"
-        ).length;
+    const review = records.filter(
+        r => r.priority === "Review recommended"
+    ).length;
 
-    const low =
-        all.filter(
-            r =>
-                r.priority === "Low"
-        ).length;
+    const low = records.filter(
+        r => r.priority === "Low priority"
+    ).length;
 
-    const reverts =
-        all.filter(
-            r =>
-                r.category ===
-                "Explicit revert"
-        ).length;
+    const revert = records.filter(
+        r => r.category === "Explicit revert"
+    ).length;
 
+    document.getElementById("statTotal").textContent =
+        records.length;
 
-    document.getElementById(
-        "totalRecords"
-    ).textContent = all.length;
+    document.getElementById("statReview").textContent =
+        review;
 
+    document.getElementById("statLow").textContent =
+        low;
 
-    document.getElementById(
-        "reviewCount"
-    ).textContent = review;
-
-
-    document.getElementById(
-        "lowCount"
-    ).textContent = low;
-
-
-    document.getElementById(
-        "revertCount"
-    ).textContent = reverts;
+    document.getElementById("statRevert").textContent =
+        revert;
 
 }
 
 
-
 /* =========================================================
-   REAL-WORLD CLAIM MENU
-   ========================================================= */
+   REAL-WORLD CLAIM LOADER
+========================================================= */
 
 function loadRealWorldClaim() {
 
-    let message =
-        "Choose a real-world claim for verification:\n\n";
+    const choice = prompt(
+`Choose a real-world claim scenario:
 
+1 — Presidential four-year term
+2 — Every political office holder / four-year / two terms
+3 — How many people are running for the 2027 Presidential Election?
+4 — 2026 Osun election death figure
+5 — Enter a custom real-world claim
 
-    realWorldClaims.forEach(
-        (item, index) => {
-
-            message +=
-                (index + 1) +
-                ". " +
-                item.claim +
-                "\n\n";
-
-        }
+Enter 1, 2, 3, 4 or 5:`
     );
 
+    if (!choice) return;
 
-    message +=
-        "3. Enter your own real-world claim\n\n";
+    if (choice === "1") {
 
-    message +=
-        "Enter 1, 2 or 3.";
+        loadClaimIntoForm(realWorldClaims[0]);
 
+    } else if (choice === "2") {
 
-    const choice =
-        prompt(message, "1");
+        loadClaimIntoForm(realWorldClaims[1]);
 
+    } else if (choice === "3") {
 
-    if (choice === null) {
-        return;
-    }
+        loadClaimIntoForm(realWorldClaims[2]);
 
+    } else if (choice === "4") {
 
-    const index =
-        parseInt(choice, 10) - 1;
-
-
-    if (index === 0 || index === 1) {
-
-        loadClaimIntoForm(
-            realWorldClaims[index]
+        const deathClaim = prompt(
+            "Enter the Osun 2026 death claim.\n\nExample:\n50 people died in the 2026 Osun election"
         );
 
-        return;
-    }
-
-
-    if (index === 2) {
-
-        const customClaim =
-            prompt(
-                "Enter the real-world claim you want to verify:"
-            );
-
-
-        if (
-            customClaim &&
-            customClaim.trim()
-        ) {
-
-            loadCustomRealWorldClaim(
-                customClaim.trim()
-            );
-
+        if (deathClaim) {
+            loadCustomRealWorldClaim(deathClaim);
         }
 
-        return;
+    } else if (choice === "5") {
+
+        const custom = prompt(
+            "Enter the real-world claim to assess:"
+        );
+
+        if (custom) {
+            loadCustomRealWorldClaim(custom);
+        }
+
     }
-
-
-    alert(
-        "Please select 1, 2 or 3."
-    );
 
 }
 
 
-
-/* =========================================================
-   LOAD PREDEFINED REAL-WORLD CLAIM
-   ========================================================= */
-
 function loadClaimIntoForm(claim) {
 
-    selectedClaim = claim;
+    document.getElementById("submission").value =
+        claim.claim;
 
-    selectedRecord = null;
-
-
-    document.getElementById(
-        "submission"
-    ).value = claim.claim;
-
-
-    document.getElementById(
-        "source"
-    ).value =
+    document.getElementById("source").value =
         "Fact-checking submission";
 
-
-    document.getElementById(
-        "lens"
-    ).value =
+    document.getElementById("lens").value =
         "Conflicting information";
 
+    addSessionClaimIfMissing(claim);
 
-    const exists =
-        sessionClaims.some(
-            item =>
-                item.id === claim.id
-        );
+    runTriage();
 
+}
+
+
+function loadCustomRealWorldClaim(claimText) {
+
+    document.getElementById("submission").value =
+        claimText;
+
+    document.getElementById("source").value =
+        "Fact-checking submission";
+
+    document.getElementById("lens").value =
+        "Conflicting information";
+
+    runTriage();
+
+}
+
+
+/* =========================================================
+   EXAMPLE
+========================================================= */
+
+function loadExample() {
+
+    document.getElementById("submission").value =
+        "Revision 30178958 explicitly reverted the previous change on FAQ.";
+
+    document.getElementById("source").value =
+        "Wikimedia public revision data";
+
+    document.getElementById("lens").value =
+        "Revert";
+
+    runTriage();
+
+}
+
+
+/* =========================================================
+   ADD SESSION RECORD
+========================================================= */
+
+function addSessionClaimIfMissing(record) {
+
+    const exists = sessionClaims.some(
+        r => r.claim === record.claim
+    );
 
     if (!exists) {
 
         sessionClaims.push({
-
-            ...claim,
-
-            page:
-                claim.claim,
-
-            editor:
-                "Real-world claim",
-
-            change:
-                "Claim submitted for verification",
-
-            type:
-                "real-world"
-
+            ...record,
+            type: "real-world"
         });
 
     }
 
-
     updateStats();
-
     renderTable();
 
-    runTriage();
-
-
-    document.getElementById(
-        "submission"
-    ).scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "center"
-
-    });
-
 }
 
 
-
 /* =========================================================
-   LOAD CUSTOM REAL-WORLD CLAIM
-   ========================================================= */
+   DEATH FIGURE DETECTION
+========================================================= */
 
-function loadCustomRealWorldClaim(
-    claimText
-) {
+function isOsun2026DeathClaim(text) {
 
-    const customClaim = {
+    const osun =
+        /osun/i.test(text);
 
-        id:
-            "RWC-CUSTOM-" +
-            Date.now(),
+    const year =
+        /2026/.test(text);
 
-        claim:
-            claimText,
+    const election =
+        /(election|poll|governorship|governor|electoral)/i.test(text);
 
-        category:
-            "Real-world claim",
+    const death =
+        /(died|death|deaths|dead|killed|killing|fatalit|murdered|lost\s+their\s+lives)/i.test(text);
 
-        priority:
-            "Review recommended",
-
-        expectedStatus:
-            "Requires human verification",
-
-        reference:
-            "No predefined source. Identify and check an authoritative source appropriate to the claim.",
-
-        source:
-            "User-submitted real-world claim",
-
-        sourceUrl:
-            "",
-
-        questions: [
-
-            "What is the original source of this claim?",
-
-            "When was the claim published?",
-
-            "Is the source authoritative for this particular fact?",
-
-            "Can the claim be independently corroborated?",
-
-            "Could the wording be missing important context?",
-
-            "Has the information changed since it was first reported?"
-
-        ]
-
-    };
-
-
-    selectedClaim =
-        customClaim;
-
-    selectedRecord =
-        null;
-
-
-    sessionClaims.push({
-
-        ...customClaim,
-
-        page:
-            claimText,
-
-        editor:
-            "User submission",
-
-        change:
-            "Claim submitted for verification",
-
-        type:
-            "real-world"
-
-    });
-
-
-    document.getElementById(
-        "submission"
-    ).value =
-        claimText;
-
-
-    document.getElementById(
-        "source"
-    ).value =
-        "Fact-checking submission";
-
-
-    document.getElementById(
-        "lens"
-    ).value =
-        "Conflicting information";
-
-
-    updateStats();
-
-    renderTable();
-
-    runTriage();
+    return osun && year && election && death;
 
 }
 
-
-
-/* =========================================================
-   LOAD WIKIMEDIA EXAMPLE
-   ========================================================= */
-
-function loadExample() {
-
-    const example =
-        records.find(
-            r =>
-                r.id === "OV-010"
-        );
-
-
-    if (!example) {
-        return;
-    }
-
-
-    selectedRecord =
-        example;
-
-    selectedClaim =
-        null;
-
-
-    document.getElementById(
-        "submission"
-    ).value =
-        "Wikimedia revision " +
-        example.revision +
-        " on " +
-        example.page +
-        " was identified as an explicit revert by " +
-        example.editor +
-        ".";
-
-
-    document.getElementById(
-        "source"
-    ).value =
-        "Wikimedia public revision data";
-
-
-    document.getElementById(
-        "lens"
-    ).value =
-        "Revert";
-
-
-    runTriage();
-
-}
-
-
-
-/* =========================================================
-   EXTRACT NUMBER FROM DEATH CLAIM
-   ========================================================= */
 
 function extractDeathFigure(text) {
 
@@ -1651,1085 +1195,1115 @@ function extractDeathFigure(text) {
 
         /(\d[\d,]*)\s+(?:deaths|fatalities)/i,
 
-        /(\d[\d,]*)\s+(?:people|persons|citizens|voters|individuals)\s+(?:died|dead)/i
+        /(\d[\d,]*)\s+(?:people|persons|citizens|voters|individuals)\s+(?:died|dead)/i,
+
+        /(\d[\d,]*)\s+(?:people|persons|citizens|voters|individuals)/i
 
     ];
 
+    for (const pattern of patterns) {
 
-    for (
-        let i = 0;
-        i < patterns.length;
-        i++
-    ) {
-
-        const match =
-            text.match(patterns[i]);
-
+        const match = text.match(pattern);
 
         if (match) {
 
-            return parseInt(
-                match[1].replace(/,/g, ""),
-                10
-            );
+            return match[1].replace(/,/g, "");
 
         }
 
     }
-
 
     return null;
 
 }
 
 
+/* =========================================================
+   CANDIDATE COUNT DETECTION
+========================================================= */
+
+function is2027CandidateCountQuestion(text) {
+
+    const year =
+        /2027/.test(text);
+
+    const presidential =
+        /(presidential|president)/i.test(text);
+
+    const candidate =
+        /(candidate|candidates|people|persons|running|contest|contesting|contestants|number)/i.test(text);
+
+    const countQuestion =
+        /(how\s+many|number\s+of|count|there\s+are|are\s+there)/i.test(text);
+
+    return year &&
+           presidential &&
+           candidate &&
+           countQuestion;
+
+}
+
+
+function extractCandidateCount(text) {
+
+    const patterns = [
+
+        /(?:there\s+are|there\s+is|has)\s+(\d[\d,]*)\s+(?:presidential\s+)?candidates/i,
+
+        /(\d[\d,]*)\s+(?:presidential\s+)?candidates/i,
+
+        /(?:INEC|inec)\s+(?:has|listed|published)\s+(\d[\d,]*)/i
+
+    ];
+
+    for (const pattern of patterns) {
+
+        const match = text.match(pattern);
+
+        if (match) {
+            return match[1].replace(/,/g, "");
+        }
+
+    }
+
+    return null;
+
+}
+
 
 /* =========================================================
-   DETECT OSUN 2026 DEATH CLAIM
-   ========================================================= */
+   PRESIDENTIAL TENURE DETECTION
+========================================================= */
 
-function isOsun2026DeathClaim(text) {
-
-    const hasOsun =
-        /osun/i.test(text);
-
-    const has2026 =
-        /2026/i.test(text);
-
-    const hasElection =
-        /(election|governorship|poll|polling|election-related)/i.test(text);
-
-    const hasDeath =
-        /(death|deaths|died|dead|killed|killing|fatalities|people lost their lives)/i.test(text);
-
+function isPresidentialFourYearClaim(text) {
 
     return (
-        hasOsun &&
-        has2026 &&
-        hasElection &&
-        hasDeath
+        /(president|presidential)/i.test(text) &&
+        /four[-\s]?year/i.test(text) &&
+        /(term|tenure|office)/i.test(text)
     );
 
 }
 
 
+/* =========================================================
+   BROAD POLITICAL TENURE DETECTION
+========================================================= */
+
+function isBroadTenureClaim(text) {
+
+    return (
+
+        (
+            /every\s+political\s+office\s+holder/i.test(text) ||
+            /every\s+political\s+officeholder/i.test(text) ||
+            /all\s+political\s+office\s+holders/i.test(text) ||
+            /all\s+political\s+officeholders/i.test(text)
+        )
+
+        &&
+
+        /four[-\s]?year/i.test(text)
+
+        &&
+
+        /(maximum|limit|limited)/i.test(text)
+
+        &&
+
+        /two\s+terms?/i.test(text)
+
+    );
+
+}
+
 
 /* =========================================================
-   MAIN AI TRIAGE
-   ========================================================= */
+   ADD CUSTOM OSUN RECORD
+========================================================= */
+
+function addOsunClaim(text, figure) {
+
+    const id =
+        "RWC-OSUN-" +
+        Date.now().toString().slice(-6);
+
+    const record = {
+
+        id: id,
+
+        claim: text,
+
+        category:
+            "Real-world claim / Osun 2026 death figure",
+
+        priority:
+            "Review recommended",
+
+        expectedStatus:
+            "Requires dated and attributable evidence",
+
+        reference:
+            figure
+                ? `Claimed figure detected: ${figure} death(s). The number is treated as a claim requiring verification.`
+                : "A death-related claim was detected, but no specific figure could be confidently extracted.",
+
+        source:
+            "INEC election/security information and attributable election reporting",
+
+        sourceUrl:
+            "https://www.inecnigeria.org/",
+
+        questions:
+            realWorldClaims[3].questions,
+
+        type:
+            "real-world"
+
+    };
+
+    sessionClaims.push(record);
+
+    return record;
+
+}
+
+
+/* =========================================================
+   ADD CUSTOM CANDIDATE COUNT RECORD
+========================================================= */
+
+function addCandidateClaim(text, figure) {
+
+    const id =
+        "RWC-CAND-" +
+        Date.now().toString().slice(-6);
+
+    const record = {
+
+        id: id,
+
+        claim: text,
+
+        category:
+            "Real-world claim / presidential candidate count",
+
+        priority:
+            "Review recommended",
+
+        expectedStatus:
+            "Verify against the latest official INEC candidate list",
+
+        reference:
+            figure
+                ? `Candidate figure detected in the claim: ${figure}. The figure should be compared with the latest official INEC list.`
+                : "The question asks for the number of presidential candidates. The current official INEC list should be checked.",
+
+        source:
+            "Independent National Electoral Commission (INEC) — Presidential and National Assembly Elections for January 2027",
+
+        sourceUrl:
+            "https://inecnigeria.org/press/presidential-national-assembly-elections-jan-2027-presidential",
+
+        questions:
+            realWorldClaims[2].questions,
+
+        type:
+            "real-world"
+
+    };
+
+    sessionClaims.push(record);
+
+    return record;
+
+}
+
+
+/* =========================================================
+   RUN AI TRIAGE
+========================================================= */
 
 function runTriage() {
 
     const submission =
-        document.getElementById(
-            "submission"
-        ).value.trim();
-
+        document.getElementById("submission").value.trim();
 
     const source =
-        document.getElementById(
-            "source"
-        ).value;
-
+        document.getElementById("source").value;
 
     const lens =
-        document.getElementById(
-            "lens"
-        ).value;
-
+        document.getElementById("lens").value;
 
     if (!submission) {
 
-        alert(
-            "Please enter information or use Load example / Real-world claim."
-        );
+        alert("Please enter information or a claim first.");
 
         return;
+
     }
 
 
-    let result = null;
+    /* -----------------------------------------
+       1. BROAD POLITICAL TENURE
+    ----------------------------------------- */
+
+    if (isBroadTenureClaim(submission)) {
+
+        const claim = realWorldClaims[1];
+
+        addSessionClaimIfMissing({
+            ...claim,
+            type: "real-world"
+        });
+
+        displayTriageResult({
+
+            title:
+                "Broad political-tenure claim requires qualification",
+
+            status:
+                "Review recommended",
+
+            category:
+                claim.category,
+
+            assessment:
+                "The statement generalizes tenure and term-limit rules across every political office holder. Constitutional and statutory provisions are attached to particular offices, so the specific office and applicable legal provision must be identified before the statement can be assessed.",
+
+            reference:
+                claim.reference,
+
+            expected:
+                claim.expectedStatus,
+
+            source:
+                claim.source,
+
+            sourceUrl:
+                claim.sourceUrl,
+
+            questions:
+                claim.questions
+
+        });
+
+        return;
+
+    }
 
 
+    /* -----------------------------------------
+       2. PRESIDENTIAL FOUR-YEAR CLAIM
+    ----------------------------------------- */
 
-    /* =====================================================
-       REAL-WORLD CLAIM MODE
-       ===================================================== */
+    if (isPresidentialFourYearClaim(submission)) {
+
+        const claim = realWorldClaims[0];
+
+        addSessionClaimIfMissing({
+            ...claim,
+            claim: submission,
+            type: "real-world"
+        });
+
+        displayTriageResult({
+
+            title:
+                "Presidential tenure claim requires verification",
+
+            status:
+                "Review recommended",
+
+            category:
+                claim.category,
+
+            assessment:
+                "The claim concerns the constitutional term of office of the President. It should be checked directly against the relevant constitutional provision rather than generalized to all political offices.",
+
+            reference:
+                claim.reference,
+
+            expected:
+                claim.expectedStatus,
+
+            source:
+                claim.source,
+
+            sourceUrl:
+                claim.sourceUrl,
+
+            questions:
+                claim.questions
+
+        });
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       3. 2027 PRESIDENTIAL CANDIDATE COUNT
+    ----------------------------------------- */
+
+    if (is2027CandidateCountQuestion(submission)) {
+
+        const figure =
+            extractCandidateCount(submission);
+
+        const record =
+            addCandidateClaim(submission, figure);
+
+        updateStats();
+        renderTable();
+
+        displayTriageResult({
+
+            title:
+                "2027 presidential candidate-count claim requires verification",
+
+            status:
+                "Review recommended",
+
+            category:
+                record.category,
+
+            assessment:
+                figure
+                    ? `The claim contains a candidate figure of ${figure}. The number should be compared with the latest official INEC candidate list because candidate information can change through the electoral process.`
+                    : "The claim asks for the number of people running for the 2027 presidential election. The answer should be checked against the latest official INEC candidate list.",
+
+            reference:
+                "INEC publishes official candidate information for the 2027 Presidential and National Assembly elections. The latest official list should be treated as the primary verification source.",
+
+            expected:
+                "Verify against the latest official INEC candidate list",
+
+            source:
+                "Independent National Electoral Commission (INEC) — Presidential and National Assembly Elections for January 2027",
+
+            sourceUrl:
+                "https://inecnigeria.org/press/presidential-national-assembly-elections-jan-2027-presidential",
+
+            questions:
+                realWorldClaims[2].questions
+
+        });
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       4. OSUN 2026 DEATH CLAIM
+    ----------------------------------------- */
+
+    if (isOsun2026DeathClaim(submission)) {
+
+        const figure =
+            extractDeathFigure(submission);
+
+        const record =
+            addOsunClaim(submission, figure);
+
+        updateStats();
+        renderTable();
+
+        displayTriageResult({
+
+            title:
+                "Death-toll claim requires verification",
+
+            status:
+                "Review recommended",
+
+            category:
+                record.category,
+
+            assessment:
+                figure
+                    ? `The claim reports ${figure} death(s) in connection with the 2026 Osun election. The figure should be checked against dated and attributable sources and the period covered by each source.`
+                    : "The claim reports deaths in connection with the 2026 Osun election, but a specific number could not be confidently extracted. The underlying evidence should be checked directly.",
+
+            reference:
+                record.reference,
+
+            expected:
+                record.expectedStatus,
+
+            source:
+                record.source,
+
+            sourceUrl:
+                record.sourceUrl,
+
+            questions:
+                record.questions
+
+        });
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       5. GENERIC FACT-CHECKING CLAIM
+    ----------------------------------------- */
+
+    if (source === "Fact-checking submission") {
+
+        const record = {
+
+            id:
+                "RWC-CUSTOM-" +
+                Date.now().toString().slice(-6),
+
+            claim:
+                submission,
+
+            category:
+                "Real-world claim / fact-checking",
+
+            priority:
+                "Review recommended",
+
+            expectedStatus:
+                "Requires human verification",
+
+            reference:
+                "The submitted claim should be checked against an identifiable, authoritative or otherwise attributable source.",
+
+            source:
+                "Fact-checking submission",
+
+            sourceUrl:
+                "",
+
+            questions: [
+
+                "What is the original source of the claim?",
+
+                "When was the claim made or published?",
+
+                "What evidence directly supports the claim?",
+
+                "Is the source authoritative or independently attributable?",
+
+                "Could the claim be missing relevant context?",
+
+                "Are there conflicting sources that should be compared?",
+
+                "Does the wording of the claim accurately represent the evidence?"
+
+            ],
+
+            type:
+                "real-world"
+
+        };
+
+        addSessionClaimIfMissing(record);
+
+        displayTriageResult({
+
+            title:
+                "Claim requires human verification",
+
+            status:
+                "Review recommended",
+
+            category:
+                record.category,
+
+            assessment:
+                "The submitted information is a real-world factual claim. OpenVerify AI recommends checking the original source, date, evidence and relevant context before reaching a verification decision.",
+
+            reference:
+                record.reference,
+
+            expected:
+                record.expectedStatus,
+
+            source:
+                record.source,
+
+            sourceUrl:
+                record.sourceUrl,
+
+            questions:
+                record.questions
+
+        });
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------
+       6. WIKIMEDIA REVISION TRIAGE
+    ----------------------------------------- */
+
+    const lower =
+        submission.toLowerCase();
+
+    let result = {
+
+        title:
+            "Wikimedia change assessed",
+
+        status:
+            "Low priority",
+
+        category:
+            lens,
+
+        assessment:
+            "The submitted change appears contextual and does not by itself indicate a high-priority anomaly. Human review may still be appropriate where the surrounding context is unclear.",
+
+        reference:
+            "Review the revision history and surrounding edits.",
+
+        expected:
+            "Normal contextual handling",
+
+        source:
+            source,
+
+        sourceUrl:
+            "",
+
+        questions: []
+
+    };
+
 
     if (
-        source ===
-        "Fact-checking submission"
+        lens === "Revert" ||
+        /explicitly\s+reverted|revert(ed)?/i.test(lower)
     ) {
 
+        result = {
 
-        /* =================================================
-           OSUN 2026 DEATH FIGURE
-           ================================================= */
+            title:
+                "Explicit revert detected",
 
-        if (
-            isOsun2026DeathClaim(
-                submission
-            )
-        ) {
+            status:
+                "Review recommended",
 
-            const claimedNumber =
-                extractDeathFigure(
-                    submission
-                );
+            category:
+                "Explicit revert",
 
+            assessment:
+                "The submission indicates that a previous change was explicitly reverted. A human reviewer should inspect both the reverted edit and the replacement edit to understand why the revert occurred.",
 
-            if (
-                claimedNumber !== null
-            ) {
+            reference:
+                "Wikimedia revision history and the surrounding sequence of edits.",
 
-                const record = {
+            expected:
+                "Review the reverted and replacement revisions",
 
-                    id:
-                        "RWC-OSUN-" +
-                        Date.now(),
+            source:
+                source,
 
-                    claim:
-                        submission,
+            sourceUrl:
+                "https://quarry.wmcloud.org/query/109467",
 
-                    page:
-                        submission,
+            questions: [
 
-                    editor:
-                        "Real-world claim",
+                "What content was removed by the revert?",
 
-                    change:
-                        "Death figure submitted for verification",
+                "Who made the original change?",
 
-                    category:
-                        "Real-world claim / election violence",
+                "Who performed the revert?",
 
-                    priority:
-                        "Review recommended",
+                "Was an edit summary provided?",
 
-                    type:
-                        "real-world",
+                "Was the reverted information supported by a source?",
 
-                    claimedNumber:
-                        claimedNumber,
+                "Does the replacement version resolve the underlying issue?"
 
-                    source:
-                        "Election violence / death-toll claim"
+            ]
 
-                };
-
-
-                sessionClaims.push(
-                    record
-                );
-
-
-                selectedClaim =
-                    record;
-
-
-                updateStats();
-
-                renderTable();
-
-
-                result = {
-
-                    status:
-                        "Review recommended",
-
-                    title:
-                        "Death-toll claim requires verification",
-
-                    reason:
-                        "The claim reports " +
-                        claimedNumber.toLocaleString() +
-                        " death" +
-                        (
-                            claimedNumber === 1
-                            ? ""
-                            : "s"
-                        ) +
-                        " in connection with the 2026 Osun election. The figure should be checked against dated and attributable sources, including the period covered by each source.",
-
-                    category:
-                        "Election violence / death toll",
-
-                    reference:
-                        "The system should compare the claimed figure with independently attributable reporting and establish whether the figure concerns election day, the pre-election period, or election-related violence across a wider period.",
-
-                    expected:
-                        "Human verification required",
-
-                    source:
-                        "Election-related reporting and authoritative records",
-
-                    sourceUrl:
-                        "https://www.premiumtimesng.com/features-and-interviews/902414-osundecides2026-a-governorship-election-trailed-by-sorrow-tears-blood.html",
-
-                    questions: [
-
-                        "What exact period does the claimed death figure cover?",
-
-                        "Does the figure refer only to election day or also the pre-election period?",
-
-                        "How many deaths were independently confirmed by an authoritative source?",
-
-                        "Are all reported deaths established as election-related?",
-
-                        "Does the source provide names, locations or incidents supporting the figure?",
-
-                        "Are multiple reports counting the same incidents?",
-
-                        "Is the figure an official count, an observer estimate, or a claim attributed to a political actor?",
-
-                        "When was the figure published?",
-
-                        "Have later reports revised or clarified the figure?",
-
-                        "Do different sources use the same definition of an election-related death?"
-
-                    ]
-
-                };
-
-            }
-
-        }
-
-
-
-        /* =================================================
-           PREDEFINED REAL-WORLD CLAIM
-           ================================================= */
-
-        if (!result) {
-
-            let matchingClaim =
-                realWorldClaims.find(
-                    item =>
-                        item.claim
-                            .trim()
-                            .toLowerCase() ===
-                        submission
-                            .trim()
-                            .toLowerCase()
-                );
-
-
-            if (
-                !matchingClaim &&
-                selectedClaim
-            ) {
-
-                matchingClaim =
-                    selectedClaim;
-
-            }
-
-
-            if (
-                matchingClaim &&
-                matchingClaim.id ===
-                "RWC-001"
-            ) {
-
-                result = {
-
-                    status:
-                        "Review recommended",
-
-                    title:
-                        "Presidential tenure claim requires verification",
-
-                    reason:
-                        "The claim concerns the constitutional term of office of the President of Nigeria. The relevant constitutional provision should be checked directly.",
-
-                    category:
-                        "Constitutional tenure",
-
-                    reference:
-                        "Constitution of the Federal Republic of Nigeria — Section 135.",
-
-                    expected:
-                        "Verify against the Constitution",
-
-                    source:
-                        "Constitution of the Federal Republic of Nigeria",
-
-                    sourceUrl:
-                        matchingClaim.sourceUrl,
-
-                    questions:
-                        matchingClaim.questions
-
-                };
-
-            }
-
-
-            else if (
-                matchingClaim &&
-                matchingClaim.id ===
-                "RWC-002"
-            ) {
-
-                result = {
-
-                    status:
-                        "Review recommended",
-
-                    title:
-                        "Claim is broad and requires qualification",
-
-                    reason:
-                        "The statement generalises tenure and term-limit rules across every political office holder in Nigeria. Tenure provisions are attached to particular offices, so the claim should be checked against the specific office and applicable law rather than treated as a universal rule.",
-
-                    category:
-                        "Constitutional tenure",
-
-                    reference:
-                        "Constitution of the Federal Republic of Nigeria — relevant provisions include Sections 135, 137, 180 and 182, depending on the office.",
-
-                    expected:
-                        "Requires qualification and human verification",
-
-                    source:
-                        "Constitution of the Federal Republic of Nigeria",
-
-                    sourceUrl:
-                        matchingClaim.sourceUrl,
-
-                    questions:
-                        matchingClaim.questions
-
-                };
-
-            }
-
-
-            else if (
-                matchingClaim
-            ) {
-
-                result = {
-
-                    status:
-                        "Review recommended",
-
-                    title:
-                        "Human verification recommended",
-
-                    reason:
-                        "This real-world claim has been identified for verification. The system does not independently declare it true or false.",
-
-                    category:
-                        matchingClaim.category,
-
-                    reference:
-                        matchingClaim.reference,
-
-                    expected:
-                        matchingClaim.expectedStatus,
-
-                    source:
-                        matchingClaim.source,
-
-                    sourceUrl:
-                        matchingClaim.sourceUrl,
-
-                    questions:
-                        matchingClaim.questions
-
-                };
-
-            }
-
-        }
-
-
-
-        /* =================================================
-           GENERIC REAL-WORLD CLAIM
-           ================================================= */
-
-        if (!result) {
-
-            const customRecord = {
-
-                id:
-                    "RWC-CUSTOM-" +
-                    Date.now(),
-
-                claim:
-                    submission,
-
-                page:
-                    submission,
-
-                editor:
-                    "User submission",
-
-                change:
-                    "Real-world claim submitted for verification",
-
-                category:
-                    "Real-world claim",
-
-                priority:
-                    "Review recommended",
-
-                type:
-                    "real-world"
-
-            };
-
-
-            sessionClaims.push(
-                customRecord
-            );
-
-
-            selectedClaim =
-                customRecord;
-
-
-            updateStats();
-
-            renderTable();
-
-
-            result = {
-
-                status:
-                    "Review recommended",
-
-                title:
-                    "Human verification recommended",
-
-                reason:
-                    "This is a real-world factual claim. The system has identified it for verification rather than independently declaring it true or false.",
-
-                category:
-                    lens,
-
-                reference:
-                    "Check an authoritative primary source and corroborate with independent evidence where appropriate.",
-
-                expected:
-                    "Requires human verification",
-
-                source:
-                    source,
-
-                questions: [
-
-                    "What is the original source of the claim?",
-
-                    "When was the information published?",
-
-                    "Is the source authoritative for this particular fact?",
-
-                    "Can the claim be independently corroborated?",
-
-                    "Could the wording be missing important context?",
-
-                    "Has the information changed since it was first reported?"
-
-                ]
-
-            };
-
-        }
+        };
 
     }
 
 
+    else if (
+        lens === "Large change" ||
+        /large\s+change|substantial\s+change/i.test(lower)
+    ) {
 
-    /* =====================================================
-       WIKIMEDIA DATA
-       ===================================================== */
+        result = {
+
+            title:
+                "Large change detected",
+
+            status:
+                "Review recommended",
+
+            category:
+                "Large change",
+
+            assessment:
+                "The submission indicates a substantial change. The change should be compared with the previous version and checked against the relevant sources.",
+
+            reference:
+                "Wikimedia revision history and edit context.",
+
+            expected:
+                "Human review recommended",
+
+            source:
+                source,
+
+            sourceUrl:
+                "https://quarry.wmcloud.org/query/109467",
+
+            questions: [
+
+                "What changed compared with the previous version?",
+
+                "Was the change supported by a source?",
+
+                "Does the change alter a factual claim?",
+
+                "Was an edit summary provided?",
+
+                "Are there conflicting versions or sources?"
+
+            ]
+
+        };
+
+    }
+
+
+    else if (
+        lens === "Process change"
+    ) {
+
+        result = {
+
+            title:
+                "Process-related change detected",
+
+            status:
+                "Review recommended",
+
+            category:
+                "Process change",
+
+            assessment:
+                "The submission appears to involve a change to process-related information. Because process instructions can affect how users participate, the change should be checked against the authoritative policy or documentation.",
+
+            reference:
+                "Relevant Wikimedia policy, documentation or process page.",
+
+            expected:
+                "Human review recommended",
+
+            source:
+                source,
+
+            sourceUrl:
+                "https://quarry.wmcloud.org/query/109467",
+
+            questions: [
+
+                "What process is being changed?",
+
+                "Was the change documented or announced?",
+
+                "Does the new wording agree with the governing policy?",
+
+                "Could the change affect user participation?",
+
+                "Was an authoritative source provided?"
+
+            ]
+
+        };
+
+    }
+
 
     else {
 
-        const revisionMatch =
-            submission.match(
-                /\b\d{7,9}\b/
-            );
+        result = {
 
+            title:
+                "Information triaged",
 
-        let matched = null;
+            status:
+                "Low priority",
 
+            category:
+                "Normal/contextual edit",
 
-        if (revisionMatch) {
+            assessment:
+                "No high-priority anomaly was identified from the information provided. Context and source evidence should still be checked where the factual content is disputed.",
 
-            matched =
-                records.find(
-                    r =>
-                        r.revision ===
-                        revisionMatch[0]
-                );
+            reference:
+                "Review the relevant revision history and source context.",
 
-        }
+            expected:
+                "Normal contextual handling",
 
+            source:
+                source,
 
-        if (
-            !matched &&
-            selectedRecord
-        ) {
+            sourceUrl:
+                "https://quarry.wmcloud.org/query/109467",
 
-            matched =
-                selectedRecord;
+            questions: [
 
-        }
+                "Does the surrounding context change the interpretation?",
 
+                "Is the information supported by an appropriate source?",
 
-        if (!matched) {
+                "Is there a conflicting version?",
 
-            matched =
-                records.find(
-                    r =>
-                        submission
-                            .toLowerCase()
-                            .includes(
-                                r.id.toLowerCase()
-                            )
-                );
+                "Would additional context change the triage priority?"
 
-        }
+            ]
 
-
-        if (matched) {
-
-            const isReview =
-                matched.priority ===
-                "Review recommended";
-
-
-            result = {
-
-                status:
-                    isReview
-                    ? "Review recommended"
-                    : "Low priority",
-
-                title:
-                    isReview
-                    ? "Human review recommended"
-                    : "Low-priority contextual activity",
-
-                reason:
-                    isReview
-                    ?
-                    "The record matches a change pattern in the demonstration dataset that has been designated for human verification."
-                    :
-                    "The record appears to represent a routine or contextual change that does not require immediate escalation.",
-
-                category:
-                    matched.category,
-
-                reference:
-                    "Quarry demonstration dataset — Query 109467",
-
-                expected:
-                    matched.priority,
-
-                source:
-                    "Wikimedia public revision data",
-
-                questions:
-                    isReview
-                    ?
-                    [
-                        "What changed in the revision?",
-
-                        "Why was the change made?",
-
-                        "Does the revision introduce factual or contextual changes?",
-
-                        "Is there supporting evidence for the change?",
-
-                        "Does the revision history provide additional context?"
-                    ]
-                    :
-                    []
-
-            };
-
-        }
-
-
-        else {
-
-            result = {
-
-                status:
-                    "Review recommended",
-
-                title:
-                    "Human review recommended",
-
-                reason:
-                    "The system could not confidently match this information to a known demonstration record. Human verification is recommended before making a factual determination.",
-
-                category:
-                    lens,
-
-                reference:
-                    "No matching demonstration record",
-
-                expected:
-                    "Requires human verification",
-
-                source:
-                    source,
-
-                questions: [
-
-                    "What exactly changed?",
-
-                    "What evidence supports the information?",
-
-                    "Is the source authoritative?",
-
-                    "Can the information be independently corroborated?"
-
-                ]
-
-            };
-
-        }
+        };
 
     }
 
 
-    displayTriageResult(
-        result
-    );
+    displayTriageResult(result);
 
 }
 
 
-
 /* =========================================================
-   DISPLAY RESULT
-   ========================================================= */
+   DISPLAY TRIAGE RESULT
+========================================================= */
 
-function displayTriageResult(
-    result
-) {
+function displayTriageResult(result) {
 
-    const detailedResult =
-        document.getElementById(
-            "detailedResult"
-        );
-
-
-    const quickResult =
-        document.getElementById(
-            "triageResult"
-        );
-
-
-    const placeholder =
-        document.getElementById(
-            "resultPlaceholder"
-        );
-
-
-    placeholder.style.display =
-        "none";
-
-
-    detailedResult.style.display =
-        "block";
-
-
-    const isReview =
-        result.status ===
-        "Review recommended";
-
-
-    let questionsHTML = "";
-
-
-    if (
-        result.questions &&
-        result.questions.length
-    ) {
-
-        questionsHTML = `
-
-            <div class="question-box">
-
-                <strong>
-                    Likely verification questions
-                </strong>
-
-                <ol>
-
-                    ${result.questions
-                        .map(
-                            question =>
-                                `
-                                <li>
-                                    ${escapeHTML(question)}
-                                </li>
-                                `
-                        )
-                        .join("")
-                    }
-
-                </ol>
-
-            </div>
-
-        `;
-
-    }
+    const statusClass =
+        result.status === "Review recommended"
+            ? "status-review"
+            : result.status === "Low priority"
+                ? "status-low"
+                : "status-revert";
 
 
     let sourceHTML = "";
 
-
-    if (result.source) {
+    if (result.sourceUrl) {
 
         sourceHTML = `
-
-            <div class="source-box">
-
-                <strong>
-                    Source / reference to check
-                </strong>
-
-                <br>
-
-                ${escapeHTML(result.source)}
-
-                ${
-                    result.sourceUrl
-                    ?
-                    `
-                    <br><br>
-
-                    <a
-                        href="${escapeHTML(result.sourceUrl)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Open source/reference
-                    </a>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-
+            <a href="${escapeHTML(result.sourceUrl)}"
+               target="_blank"
+               rel="noopener noreferrer">
+                Open source / reference
+            </a>
         `;
+
+    } else {
+
+        sourceHTML = "No direct source link supplied.";
 
     }
 
 
-    detailedResult.innerHTML = `
-
-        <div class="result ${isReview ? "review" : "low"}">
-
-            <h3>
-                ${escapeHTML(result.title)}
-            </h3>
+    const questionsHTML =
+        (result.questions || [])
+            .map(q => `<li>${escapeHTML(q)}</li>`)
+            .join("");
 
 
-            <div class="claim-box">
+    document.getElementById("triageResult").innerHTML = `
 
-                <strong>
-                    Claim being assessed
-                </strong>
+        <div class="result">
 
-                <br><br>
+            <div class="result-header">
 
-                ${escapeHTML(
-                    document.getElementById(
-                        "submission"
-                    ).value
-                )}
-
-            </div>
-
-
-            <div class="result-grid">
-
-                <strong>
-                    Triage status
-                </strong>
-
-                <span>
+                <span class="result-status ${statusClass}">
                     ${escapeHTML(result.status)}
                 </span>
 
-
-                <strong>
-                    Assessment
-                </strong>
-
-                <span>
-                    ${escapeHTML(result.reason)}
-                </span>
-
-
-                <strong>
-                    Category
-                </strong>
-
-                <span>
-                    ${escapeHTML(result.category)}
-                </span>
-
-
-                <strong>
-                    Evidence/reference
-                </strong>
-
-                <span>
-                    ${escapeHTML(result.reference)}
-                </span>
-
-
-                <strong>
-                    Expected handling
-                </strong>
-
-                <span>
-                    ${escapeHTML(result.expected)}
-                </span>
+                <h3>
+                    ${escapeHTML(result.title)}
+                </h3>
 
             </div>
 
+            <div class="result-body">
 
-            ${sourceHTML}
+                <div class="result-grid">
 
+                    <div class="result-item">
+                        <strong>Claim / information assessed</strong>
+                        <p>
+                            ${escapeHTML(
+                                document.getElementById("submission").value
+                            )}
+                        </p>
+                    </div>
 
-            ${questionsHTML}
+                    <div class="result-item">
+                        <strong>Triage status</strong>
+                        <p>
+                            ${escapeHTML(result.status)}
+                        </p>
+                    </div>
 
+                    <div class="result-item">
+                        <strong>Assessment</strong>
+                        <p>
+                            ${escapeHTML(result.assessment)}
+                        </p>
+                    </div>
 
-            ${
-                isReview
-                ?
-                `
+                    <div class="result-item">
+                        <strong>Category</strong>
+                        <p>
+                            ${escapeHTML(result.category)}
+                        </p>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>Evidence / reference</strong>
+                        <p>
+                            ${escapeHTML(result.reference)}
+                        </p>
+                    </div>
+
+                    <div class="result-item">
+                        <strong>Expected handling</strong>
+                        <p>
+                            ${escapeHTML(result.expected)}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="source-box">
+
+                    <strong>Source / reference</strong><br>
+
+                    ${escapeHTML(result.source)}
+
+                    <br><br>
+
+                    ${sourceHTML}
+
+                </div>
+
+                <div class="questions">
+
+                    <h4>Likely verification questions</h4>
+
+                    <ol>
+                        ${questionsHTML}
+                    </ol>
+
+                </div>
+
                 <div class="button-row">
 
                     <button
-                        class="primary"
-                        onclick="scrollToQueue()"
-                    >
+                        class="btn-primary"
+                        onclick="sendCurrentToVerification()">
                         Send to human verification
                     </button>
 
+                    <button
+                        class="btn-secondary"
+                        onclick="scrollToQueue()">
+                        View verification queue
+                    </button>
+
                 </div>
-                `
-                :
-                ""
-            }
+
+            </div>
 
         </div>
 
     `;
 
-
-    quickResult.className =
-        "result " +
-        (
-            isReview
-            ? "review"
-            : "low"
-        );
+}
 
 
-    quickResult.innerHTML =
-        "<strong>" +
-        escapeHTML(result.status) +
-        "</strong> — " +
-        escapeHTML(result.title);
+/* =========================================================
+   SEND CURRENT CLAIM TO VERIFICATION
+========================================================= */
 
+function sendCurrentToVerification() {
 
-    quickResult.style.display =
-        "block";
+    const submission =
+        document.getElementById("submission").value.trim();
 
+    if (!submission) return;
 
-    renderTable();
+    const records =
+        getAllRecords();
+
+    const record =
+        records.find(r => r.claim === submission);
+
+    if (record) {
+
+        reviewRecord(record.id);
+
+    } else {
+
+        const customRecord = {
+
+            id:
+                "RWC-MANUAL-" +
+                Date.now().toString().slice(-6),
+
+            claim:
+                submission,
+
+            category:
+                "Manual verification request",
+
+            priority:
+                "Review recommended",
+
+            type:
+                "real-world",
+
+            editor:
+                "User submission",
+
+            change:
+                "Manual claim",
+
+            source:
+                "Manual submission",
+
+            reference:
+                "Human verification requested."
+
+        };
+
+        sessionClaims.push(customRecord);
+
+        updateStats();
+        renderTable();
+
+        reviewRecord(customRecord.id);
+
+    }
 
 }
 
 
-
 /* =========================================================
    SCROLL TO QUEUE
-   ========================================================= */
+========================================================= */
 
 function scrollToQueue() {
 
-    document
-        .getElementById(
-            "queueBody"
-        )
-        .closest(".section")
+    document.getElementById("verificationQueue")
         .scrollIntoView({
-
-            behavior: "smooth",
-
-            block: "start"
-
+            behavior: "smooth"
         });
 
 }
 
 
-
 /* =========================================================
    RENDER QUEUE
-   ========================================================= */
+========================================================= */
 
 function renderTable() {
 
-    const body =
-        document.getElementById(
-            "queueBody"
-        );
-
-
-    const filter =
-        document.getElementById(
-            "queueFilter"
-        ).value;
-
-
-    const search =
-        document.getElementById(
-            "queueSearch"
-        ).value
-        .trim()
-        .toLowerCase();
-
-
-    let all =
+    const records =
         getAllRecords();
 
+    const filter =
+        document.getElementById("queueFilter").value;
 
-    all =
-        all.filter(
-            record => {
-
-                if (
-                    filter ===
-                    "review"
-                ) {
-
-                    return (
-                        record.priority ===
-                        "Review recommended"
-                    );
-
-                }
+    const search =
+        document.getElementById("queueSearch").value
+            .toLowerCase()
+            .trim();
 
 
-                if (
-                    filter ===
-                    "low"
-                ) {
+    let filtered =
+        records.filter(record => {
 
-                    return (
-                        record.priority ===
-                        "Low"
-                    );
+            let matchesFilter = true;
 
-                }
+            if (filter === "review") {
 
-
-                if (
-                    filter ===
-                    "real"
-                ) {
-
-                    return (
-                        record.type ===
-                        "real-world"
-                    );
-
-                }
-
-
-                if (
-                    filter ===
-                    "revert"
-                ) {
-
-                    return (
-                        record.category ===
-                        "Explicit revert"
-                    );
-
-                }
-
-
-                return true;
+                matchesFilter =
+                    record.priority === "Review recommended";
 
             }
-        );
+
+            else if (filter === "low") {
+
+                matchesFilter =
+                    record.priority === "Low priority";
+
+            }
+
+            else if (filter === "real") {
+
+                matchesFilter =
+                    record.type === "real-world";
+
+            }
+
+            else if (filter === "revert") {
+
+                matchesFilter =
+                    record.category === "Explicit revert";
+
+            }
 
 
-    if (search) {
-
-        all =
-            all.filter(
-                record => {
-
-                    const searchable = [
-
-                        record.id,
-
-                        record.page,
-
-                        record.claim,
-
-                        record.editor,
-
-                        record.change,
-
-                        record.category,
-
-                        record.priority,
-
-                        record.source
-
-                    ]
-                    .join(" ")
-                    .toLowerCase();
+            const searchable =
+                [
+                    record.id,
+                    record.page,
+                    record.claim,
+                    record.editor,
+                    record.source,
+                    record.change,
+                    record.category
+                ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
 
 
-                    return searchable.includes(
-                        search
-                    );
-
-                }
-            );
-
-    }
+            const matchesSearch =
+                !search ||
+                searchable.includes(search);
 
 
-    if (!all.length) {
+            return matchesFilter && matchesSearch;
+
+        });
+
+
+    const body =
+        document.getElementById("queueBody");
+
+
+    if (!filtered.length) {
 
         body.innerHTML = `
-
             <tr>
-
-                <td
-                    colspan="7"
-                    class="empty"
-                >
-                    No records match the selected filter.
+                <td colspan="7" class="empty">
+                    No records match the current filter.
                 </td>
-
             </tr>
-
         `;
 
         return;
@@ -2738,478 +2312,207 @@ function renderTable() {
 
 
     body.innerHTML =
-        all.map(
-            record => {
+        filtered.map(record => {
 
-                let priorityClass =
-                    record.priority ===
-                    "Review recommended"
-                    ?
-                    "badge-review"
-                    :
-                    "badge-low";
+            let pillClass =
+                "pill-low";
 
+            if (
+                record.category === "Explicit revert"
+            ) {
 
-                if (
-                    record.type ===
-                    "real-world"
-                ) {
-
-                    priorityClass =
-                        "badge-real";
-
-                }
-
-
-                if (
-                    record.category ===
-                    "Explicit revert"
-                ) {
-
-                    priorityClass =
-                        "badge-revert";
-
-                }
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                ${escapeHTML(
-                                    record.id
-                                )}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            ${escapeHTML(
-                                record.page ||
-                                record.claim ||
-                                ""
-                            )}
-
-                            ${
-                                record.revision
-                                ?
-                                `
-                                <br>
-
-                                <small>
-                                    Revision:
-                                    ${escapeHTML(
-                                        record.revision
-                                    )}
-                                </small>
-                                `
-                                :
-                                ""
-                            }
-
-                        </td>
-
-
-                        <td>
-
-                            ${escapeHTML(
-                                record.editor ||
-                                record.source ||
-                                ""
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${escapeHTML(
-                                record.change ||
-                                ""
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${escapeHTML(
-                                record.category ||
-                                ""
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="badge ${priorityClass}"
-                            >
-                                ${escapeHTML(
-                                    record.priority
-                                )}
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            ${
-                                record.priority ===
-                                "Review recommended"
-
-                                ?
-
-                                `
-                                <button
-                                    class="small-button"
-                                    onclick="reviewRecord('${escapeHTML(record.id)}')"
-                                >
-                                    Review
-                                </button>
-                                `
-
-                                :
-
-                                `
-                                <span
-                                    style="color:#72777d;"
-                                >
-                                    No immediate action
-                                </span>
-                                `
-                            }
-
-                        </td>
-
-                    </tr>
-
-                `;
+                pillClass =
+                    "pill-revert";
 
             }
-        ).join("");
+
+            else if (
+                record.type === "real-world"
+            ) {
+
+                pillClass =
+                    "pill-real";
+
+            }
+
+            else if (
+                record.priority === "Review recommended"
+            ) {
+
+                pillClass =
+                    "pill-review";
+
+            }
+
+
+            const pageOrClaim =
+                record.page ||
+                record.claim ||
+                "—";
+
+
+            const editorOrSource =
+                record.editor ||
+                record.source ||
+                "User submission";
+
+
+            const change =
+                record.change ||
+                "Real-world claim";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+                        ${escapeHTML(record.id)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(pageOrClaim)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(editorOrSource)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(change)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(record.category)}
+                    </td>
+
+                    <td>
+                        <span class="pill ${pillClass}">
+                            ${escapeHTML(record.priority)}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="review-btn"
+                            onclick='reviewRecord(${JSON.stringify(record.id)})'>
+                            Review
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
 
 }
 
 
-
 /* =========================================================
-   OPEN HUMAN REVIEW
-   ========================================================= */
+   REVIEW RECORD
+========================================================= */
 
 function reviewRecord(id) {
 
     const record =
-        getAllRecords().find(
-            r =>
-                r.id === id
-        );
+        getAllRecords()
+            .find(r => r.id === id);
 
+    if (!record) return;
 
-    if (!record) {
-        return;
-    }
-
-
-    selectedRecord =
-        record.type === "real-world"
-        ?
-        null
-        :
-        record;
-
-
-    selectedClaim =
-        record.type === "real-world"
-        ?
-        record
-        :
-        null;
+    currentVerificationId =
+        id;
 
 
     document.getElementById(
-        "verificationPlaceholder"
-    ).style.display =
-        "none";
+        "verificationTarget"
+    ).innerHTML = `
+
+        <strong>Record selected:</strong>
+        ${escapeHTML(record.id)}
+
+        <br><br>
+
+        <strong>Claim / page:</strong>
+        ${escapeHTML(
+            record.claim ||
+            record.page ||
+            "—"
+        )}
+
+        <br><br>
+
+        <strong>Category:</strong>
+        ${escapeHTML(record.category)}
+
+        <br><br>
+
+        <strong>Suggested priority:</strong>
+        ${escapeHTML(record.priority)}
+
+        <br><br>
+
+        <strong>Reference:</strong>
+        ${escapeHTML(record.reference || "Review the available evidence.")}
+
+    `;
 
 
     document.getElementById(
-        "verificationForm"
-    ).style.display =
-        "block";
-
-
-    let referenceHTML = "";
-
-
-    if (
-        record.type ===
-        "real-world"
-    ) {
-
-        referenceHTML = `
-
-            <strong>
-                Real-world claim:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.claim
-            )}
-
-            <br><br>
-
-
-            <strong>
-                Category:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.category
-            )}
-
-            <br><br>
-
-
-            <strong>
-                Reference:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.reference ||
-                "Human verification required."
-            )}
-
-
-            ${
-                record.source
-                ?
-                `
-                <br><br>
-
-                <strong>
-                    Source:
-                </strong>
-
-                <br>
-
-                ${escapeHTML(
-                    record.source
-                )}
-                `
-                :
-                ""
-            }
-
-
-            ${
-                record.sourceUrl
-                ?
-                `
-                <br><br>
-
-                <a
-                    href="${escapeHTML(
-                        record.sourceUrl
-                    )}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Open reference
-                </a>
-                `
-                :
-                ""
-            }
-
-        `;
-
-    }
-
-    else {
-
-        referenceHTML = `
-
-            <strong>
-                Wikimedia record:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.page
-            )}
-
-            <br><br>
-
-
-            <strong>
-                Editor:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.editor
-            )}
-
-            <br><br>
-
-
-            <strong>
-                Revision:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.revision
-            )}
-
-            <br><br>
-
-
-            <strong>
-                Category:
-            </strong>
-
-            <br>
-
-            ${escapeHTML(
-                record.category
-            )}
-
-        `;
-
-    }
+        "verificationSection"
+    ).classList.add("active");
 
 
     document.getElementById(
-        "verificationContext"
-    ).innerHTML =
-        referenceHTML;
-
-
-    document.getElementById(
-        "decision"
-    ).value = "";
-
-
-    document.getElementById(
-        "evidence"
-    ).value = "";
-
-
-    document.getElementById(
-        "notes"
-    ).value = "";
-
-
-    document.getElementById(
-        "successMessage"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "verificationForm"
+        "verificationSection"
     ).scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "start"
-
+        behavior: "smooth"
     });
 
 }
 
 
-
 /* =========================================================
-   SAVE HUMAN VERIFICATION
-   ========================================================= */
+   SAVE VERIFICATION
+========================================================= */
 
 function saveVerification() {
 
-    const decision =
-        document.getElementById(
-            "decision"
-        ).value;
+    if (!currentVerificationId) {
 
+        alert("Select a record first.");
+
+        return;
+
+    }
+
+
+    const decision =
+        document.getElementById("reviewDecision").value;
 
     const evidence =
-        document.getElementById(
-            "evidence"
-        ).value
-        .trim();
-
+        document.getElementById("evidenceChecked").value.trim();
 
     const notes =
-        document.getElementById(
-            "notes"
-        ).value
-        .trim();
+        document.getElementById("reviewNotes").value.trim();
 
 
     if (!decision) {
 
-        alert(
-            "Please select a reviewer decision."
-        );
+        alert("Please select a reviewer decision.");
 
         return;
 
     }
-
-
-    if (!evidence) {
-
-        alert(
-            "Please provide the evidence checked."
-        );
-
-        return;
-
-    }
-
-
-    if (!notes) {
-
-        alert(
-            "Please provide verification notes."
-        );
-
-        return;
-
-    }
-
-
-    const reviewedItem =
-        selectedClaim ||
-        selectedRecord;
 
 
     verificationResults.push({
 
         id:
-            reviewedItem
-            ?
-            reviewedItem.id
-            :
-            "SESSION",
+            currentVerificationId,
 
         decision:
             decision,
@@ -3221,151 +2524,71 @@ function saveVerification() {
             notes,
 
         timestamp:
-            new Date()
-                .toLocaleString()
+            new Date().toISOString()
 
     });
 
 
-    const message =
-        document.getElementById(
-            "successMessage"
-        );
+    alert(
+        "Human verification saved for this session."
+    );
 
 
-    message.innerHTML = `
+    document.getElementById(
+        "reviewDecision"
+    ).value = "";
 
-        <strong>
-            Verification saved for this session.
-        </strong>
+    document.getElementById(
+        "evidenceChecked"
+    ).value = "";
 
-        <br><br>
-
-        Decision:
-        ${escapeHTML(decision)}
-
-        <br><br>
-
-        This verification is not permanently stored.
-        Refreshing the page clears the session results.
-
-    `;
+    document.getElementById(
+        "reviewNotes"
+    ).value = "";
 
 
-    message.style.display =
-        "block";
+    currentVerificationId =
+        null;
+
+
+    document.getElementById(
+        "verificationSection"
+    ).classList.remove("active");
 
 }
-
 
 
 /* =========================================================
    CANCEL VERIFICATION
-   ========================================================= */
+========================================================= */
 
 function cancelVerification() {
 
-    selectedRecord =
+    currentVerificationId =
         null;
 
-    selectedClaim =
-        null;
-
-
     document.getElementById(
-        "verificationForm"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "verificationPlaceholder"
-    ).style.display =
-        "block";
+        "verificationSection"
+    ).classList.remove("active");
 
 }
-
 
 
 /* =========================================================
    INITIALISE
-   ========================================================= */
+========================================================= */
 
 function initialise() {
 
-    /*
-     * No localStorage.
-     *
-     * Refreshing the page starts a clean session.
-     */
-
     sessionClaims = [];
-
     verificationResults = [];
-
-    selectedRecord = null;
-
-    selectedClaim = null;
-
-
-    document.getElementById(
-        "submission"
-    ).value = "";
-
-
-    document.getElementById(
-        "source"
-    ).value =
-        "Wikimedia public revision data";
-
-
-    document.getElementById(
-        "lens"
-    ).value =
-        "Process change";
-
-
-    document.getElementById(
-        "detailedResult"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "resultPlaceholder"
-    ).style.display =
-        "block";
-
-
-    document.getElementById(
-        "triageResult"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "verificationForm"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "verificationPlaceholder"
-    ).style.display =
-        "block";
-
+    currentVerificationId = null;
 
     updateStats();
-
     renderTable();
 
 }
 
-
-
-/* =========================================================
-   START
-   ========================================================= */
 
 initialise();
 
