@@ -96,6 +96,24 @@
     font-size: 20px;
   }
 
+  .collapsible-tab {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .collapsible-tab:hover {
+    background: #e2e5e9;
+  }
+
+  .tab-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .card-body {
     padding: 20px;
   }
@@ -218,6 +236,15 @@
     color: #7f1d1d;
   }
 
+  .badge-indicator {
+    background: #3366cc;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
   .result-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -283,15 +310,6 @@
 
   .hidden {
     display: none !important;
-  }
-
-  .questions {
-    margin: 0;
-    padding-left: 20px;
-  }
-
-  .questions li {
-    margin-bottom: 7px;
   }
 
   .recommendation {
@@ -441,95 +459,108 @@
 
   <!-- STEP 2 -->
   <div class="card">
-    <div class="card-header">
-      <!-- STEP 2 -->
-<div class="card">
 
-  <div
-    class="card-header triage-tab"
-    id="triageTab"
-    onclick="toggleTriagePanel()"
-    role="button"
-    tabindex="0"
-    onkeydown="if(event.key==='Enter' || event.key===' ') toggleTriagePanel()"
-  >
-    <h2>
-      <span id="triageArrow">▶</span>
-      AI-assisted triage result
-    </h2>
+    <div
+      class="card-header collapsible-tab"
+      id="triageTab"
+      onclick="toggleTriagePanel()"
+      role="button"
+      tabindex="0"
+      onkeydown="if(event.key==='Enter' || event.key===' ') toggleTriagePanel()"
+    >
+      <h2>
+        <span id="triageArrow">▶</span>
+        Step 2 — AI-assisted triage result
+      </h2>
 
-    <span id="triageTabStatus">Click to open</span>
-  </div>
-
-  <div
-    class="card-body hidden"
-    id="triagePanel"
-  >
-
-    <div id="triageEmpty">
-      Submit information above and run triage.
+      <span id="triageTabStatus">Click to open</span>
     </div>
 
-    <div id="triageResult" class="result">
+    <div
+      class="card-body hidden"
+      id="triagePanel"
+    >
 
-      <div id="resultTitle" class="result-title"></div>
-
-      <div id="resultBadges"></div>
-
-      <div class="result-grid">
-
-        <div class="result-box">
-          <strong>Recommended action</strong>
-          <span id="resultAction"></span>
-        </div>
-
-        <div class="result-box">
-          <strong>Category</strong>
-          <span id="resultCategory"></span>
-        </div>
-
-        <div class="result-box">
-          <strong>Evidence / reference</strong>
-          <span id="resultReference"></span>
-        </div>
-
-        <div class="result-box">
-          <strong>Source</strong>
-          <span id="resultSource"></span>
-        </div>
-
+      <div id="triageEmpty">
+        Submit information above and run triage.
       </div>
 
-      <div class="recommendation">
-        <strong>Human verification recommendation:</strong>
-        <span id="resultRecommendation"></span>
-      </div>
+      <div id="triageResult" class="result">
 
-      <div class="button-row">
+        <div id="resultTitle" class="result-title"></div>
 
-        <button
-          class="success"
-          onclick="sendCurrentToVerification()"
-        >
-          Send to verification queue
-        </button>
+        <div id="resultBadges"></div>
+
+        <div class="result-grid">
+
+          <div class="result-box">
+            <strong>Recommended action</strong>
+            <span id="resultAction"></span>
+          </div>
+
+          <div class="result-box">
+            <strong>Category</strong>
+            <span id="resultCategory"></span>
+          </div>
+
+          <div class="result-box">
+            <strong>Evidence / reference</strong>
+            <span id="resultReference"></span>
+          </div>
+
+          <div class="result-box">
+            <strong>Source</strong>
+            <span id="resultSource"></span>
+          </div>
+
+        </div>
+
+        <div class="recommendation">
+          <strong>Human verification recommendation:</strong>
+          <span id="resultRecommendation"></span>
+        </div>
+
+        <div class="button-row">
+
+          <button
+            class="success"
+            onclick="sendCurrentToVerification()"
+          >
+            Send to verification queue
+          </button>
+
+        </div>
 
       </div>
 
     </div>
 
   </div>
-
-</div>
 
 
   <!-- STEP 3 -->
   <div class="card">
-    <div class="card-header">
-      <h2>Step 3 — Human verification queue</h2>
+
+    <div
+      class="card-header collapsible-tab"
+      id="queueTab"
+      onclick="toggleQueuePanel()"
+      role="button"
+      tabindex="0"
+      onkeydown="if(event.key==='Enter' || event.key===' ') toggleQueuePanel()"
+    >
+      <div class="tab-title-group">
+        <h2>
+          <span id="queueArrow">▶</span>
+          Step 3 — Human verification queue
+        </h2>
+        <span id="queueIndicator" class="badge-indicator">0 waiting</span>
+      </div>
+
+      <span id="queueTabStatus">Click to open</span>
     </div>
 
-    <div class="card-body">
+    <div class="card-body hidden" id="queuePanel">
 
       <div class="queue-controls">
 
@@ -789,339 +820,100 @@ const records = [
 
 const realWorldClaims = [
 
-  /* -------------------------------------------------------
-     RWC-001
-     ------------------------------------------------------- */
-
   {
     id: "RWC-001",
-
-    claim:
-      "The President of Nigeria has a four-year term of office.",
-
-    category:
-      "Real-world claim / constitutional tenure",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against the Constitution",
-
-    reference:
-      "The Constitution contains a specific provision concerning the President's term of office.",
-
-    source:
-      "Constitution of the Federal Republic of Nigeria — Section 135",
-
-    sourceUrl:
-      "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
-
-    recommendation:
-      "Check the wording against Section 135 of the Constitution rather than relying on a general statement about political offices.",
-
-    questions: [
-      "Does Section 135 specify a four-year term for the President?",
-      "When does the presidential term begin?",
-      "How does re-election affect the number of terms?",
-      "Does the provision apply specifically to the President?",
-      "Does the wording accurately reflect the constitutional provision?"
-    ]
+    claim: "The President of Nigeria has a four-year term of office.",
+    category: "Real-world claim / constitutional tenure",
+    priority: "Review recommended",
+    expectedStatus: "Verify against the Constitution",
+    reference: "The Constitution contains a specific provision concerning the President's term of office.",
+    source: "Constitution of the Federal Republic of Nigeria — Section 135",
+    sourceUrl: "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
+    recommendation: "Check the wording against Section 135 of the Constitution rather than relying on a general statement about political offices."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-002
-     ------------------------------------------------------- */
 
   {
     id: "RWC-002",
-
-    claim:
-      "Every political office holder in Nigeria has a four-year tenure and can serve a maximum of two terms.",
-
-    category:
-      "Real-world claim / constitutional tenure",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Requires qualification and human verification",
-
-    reference:
-      "Constitutional tenure provisions apply to particular offices. Different offices may be governed by different provisions.",
-
-    source:
-      "Constitution of the Federal Republic of Nigeria — relevant provisions including Sections 135, 137, 180 and 182",
-
-    sourceUrl:
-      "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
-
-    recommendation:
-      "Do not treat the statement as applying automatically to every political office. Identify the specific office and applicable constitutional or legal provision.",
-
-    questions: [
-      "Which specific political office is being discussed?",
-      "What tenure does the Constitution prescribe for that office?",
-      "Does the Constitution impose a two-term limit?",
-      "Does the rule apply only to elected offices?",
-      "Are appointed political office holders included?",
-      "Are there offices with different tenure rules?",
-      "Which constitutional section or law establishes the rule?",
-      "Is the phrase 'every political office holder' too broad?"
-    ]
+    claim: "Every political office holder in Nigeria has a four-year tenure and can serve a maximum of two terms.",
+    category: "Real-world claim / constitutional tenure",
+    priority: "Review recommended",
+    expectedStatus: "Requires qualification and human verification",
+    reference: "Constitutional tenure provisions apply to particular offices. Different offices may be governed by different provisions.",
+    source: "Constitution of the Federal Republic of Nigeria — relevant provisions including Sections 135, 137, 180 and 182",
+    sourceUrl: "https://placng.org/i/documents/constitution-of-the-federal-republic-of-nigeria-1999-updated-with-the-1st-2nd-3rd-4th-and-5th-alteration/",
+    recommendation: "Do not treat the statement as applying automatically to every political office. Identify the specific office and applicable constitutional or legal provision."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-003
-     ------------------------------------------------------- */
 
   {
     id: "RWC-003",
-
-    claim:
-      "How many people are running for the 2027 Presidential Election in Nigeria?",
-
-    category:
-      "Real-world question / presidential candidate count",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against latest official INEC candidate information",
-
-    reference:
-      "Candidate counts should be checked against the latest official INEC information because nominations, withdrawals and replacements can affect the final list.",
-
-    source:
-      "INEC — Presidential and National Assembly Elections for January 2027",
-
-    sourceUrl:
-      "https://inecnigeria.org/press/presidential-national-assembly-elections-jan-2027-presidential",
-
-    recommendation:
-      "Use the latest official INEC candidate information and identify whether the requested figure refers to final candidates, nominees, or aspirants.",
-
-    questions: [
-      "What is the latest official INEC candidate list?",
-      "How many presidential candidates are on the list?",
-      "When was the list published or updated?",
-      "Does the figure refer to presidential candidates only?",
-      "Are vice-presidential candidates being counted separately?",
-      "Were there withdrawals or replacements?",
-      "Is the requested figure for nominated candidates, final candidates, or aspirants?"
-    ]
+    claim: "How many people are running for the 2027 Presidential Election in Nigeria?",
+    category: "Real-world question / presidential candidate count",
+    priority: "Review recommended",
+    expectedStatus: "Verify against latest official INEC candidate information",
+    reference: "Candidate counts should be checked against the latest official INEC information because nominations, withdrawals and replacements can affect the final list.",
+    source: "INEC — Presidential and National Assembly Elections for January 2027",
+    sourceUrl: "https://inecnigeria.org/press/presidential-national-assembly-elections-jan-2027-presidential",
+    recommendation: "Use the latest official INEC candidate information and identify whether the requested figure refers to final candidates, nominees, or aspirants."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-004
-     ------------------------------------------------------- */
 
   {
     id: "RWC-004",
-
-    claim:
-      "How many people died in connection with the 2026 Osun election?",
-
-    category:
-      "Real-world claim / election-related death figure",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Requires dated and attributable evidence",
-
-    reference:
-      "Reported death figures may differ depending on the period covered, methodology and whether pre-election, election-day and post-election incidents are included.",
-
-    source:
-      "INEC election/security information and attributable election reporting",
-
-    sourceUrl:
-      "https://www.inecnigeria.org/",
-
-    recommendation:
-      "Do not accept a death figure without checking the date, source, geographic scope, definition of election-related violence and whether later incidents changed the reported total.",
-
-    questions: [
-      "What exact period does the death figure cover?",
-      "Does it include pre-election violence?",
-      "Does it include election-day incidents?",
-      "Does it include post-election violence?",
-      "Who originally reported the deaths?",
-      "Were the deaths confirmed by an identifiable authority?",
-      "Are the deaths established as election-related?",
-      "Could the same incident have been counted twice?",
-      "Is the number an official count, estimate or attributed report?",
-      "When was the figure published?"
-    ]
+    claim: "How many people died in connection with the 2026 Osun election?",
+    category: "Real-world claim / election-related death figure",
+    priority: "Review recommended",
+    expectedStatus: "Requires dated and attributable evidence",
+    reference: "Reported death figures may differ depending on the period covered, methodology and whether pre-election, election-day and post-election incidents are included.",
+    source: "INEC election/security information and attributable election reporting",
+    sourceUrl: "https://www.inecnigeria.org/",
+    recommendation: "Do not accept a death figure without checking the date, source, geographic scope, definition of election-related violence and whether later incidents changed the reported total."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-005
-     ------------------------------------------------------- */
 
   {
     id: "RWC-005",
-
-    claim:
-      "When was the Osun State 2026 Governorship Election held?",
-
-    category:
-      "Real-world question / election date",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against official INEC timetable",
-
-    reference:
-      "INEC's timetable identifies 15 August 2026 as the election date.",
-
-    source:
-      "INEC — Timetable and Schedule of Activities for Osun State 2026 Governorship Election",
-
-    sourceUrl:
-      "https://www.inecnigeria.org/timetable-and-schedule-of-activities-for-osun-state-2026-governorship-election/",
-
-    recommendation:
-      "Check the answer against the official INEC timetable. Confirm that the date refers specifically to the Osun State governorship election and not another election-related activity.",
-
-    questions: [
-      "What date does the official INEC timetable specify?",
-      "Does the date refer specifically to the Osun State governorship election?",
-      "Was the election conducted on the scheduled date?",
-      "Is the answer confusing the election date with the result declaration date?"
-    ]
+    claim: "When was the Osun State 2026 Governorship Election held?",
+    category: "Real-world question / election date",
+    priority: "Review recommended",
+    expectedStatus: "Verify against official INEC timetable",
+    reference: "INEC's timetable identifies 15 August 2026 as the election date.",
+    source: "INEC — Timetable and Schedule of Activities for Osun State 2026 Governorship Election",
+    sourceUrl: "https://www.inecnigeria.org/timetable-and-schedule-of-activities-for-osun-state-2026-governorship-election/",
+    recommendation: "Check the answer against the official INEC timetable. Confirm that the date refers specifically to the Osun State governorship election and not another election-related activity."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-006
-     ------------------------------------------------------- */
 
   {
     id: "RWC-006",
-
-    claim:
-      "How many local government areas were covered by the Osun State 2026 Governorship Election?",
-
-    category:
-      "Real-world question / election coverage",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against INEC and election-day reporting",
-
-    reference:
-      "Election-day reporting states that the Osun governorship election was conducted across all 30 local government areas.",
-
-    source:
-      "Channels Television — Osun 2026 Governorship Election coverage",
-
-    sourceUrl:
-      "https://www.channelstv.com/2026/08/15/live-osun-2026-gov-election/",
-
-    recommendation:
-      "Verify the figure against INEC or reliable election reporting. Ensure that the number refers to local government areas rather than wards or polling units.",
-
-    questions: [
-      "How many local government areas are in scope?",
-      "Does the figure refer to LGAs, wards or polling units?",
-      "Does the source state that the election was conducted across all LGAs?",
-      "Can the figure be cross-checked with INEC information?"
-    ]
+    claim: "How many local government areas were covered by the Osun State 2026 Governorship Election?",
+    category: "Real-world question / election coverage",
+    priority: "Review recommended",
+    expectedStatus: "Verify against INEC and election-day reporting",
+    reference: "Election-day reporting states that the Osun governorship election was conducted across all 30 local government areas.",
+    source: "Channels Television — Osun 2026 Governorship Election coverage",
+    sourceUrl: "https://www.channelstv.com/2026/08/15/live-osun-2026-gov-election/",
+    recommendation: "Verify the figure against INEC or reliable election reporting. Ensure that the number refers to local government areas rather than wards or polling units."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-007
-     ------------------------------------------------------- */
 
   {
     id: "RWC-007",
-
-    claim:
-      "How many political parties contested the Osun State 2026 Governorship Election?",
-
-    category:
-      "Real-world question / candidate and party count",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against final election information",
-
-    reference:
-      "INEC-related reporting stated that the inclusion of the SDP candidate following a court judgment increased the number of participating political parties from 14 to 15.",
-
-    source:
-      "Channels Television — INEC statement on Osun SDP court judgment",
-
-    sourceUrl:
-      "https://www.channelstv.com/2026/08/14/osun-sdp-judgement-we-printed-millions-of-ballot-papers-in-36-hours-inec/",
-
-    recommendation:
-      "Use the final election-stage figure and check the publication date. Earlier reports may show 14 parties before the SDP candidate was included.",
-
-    questions: [
-      "What was the final number of participating political parties?",
-      "Was the SDP candidate included before the election?",
-      "Does the source predate or postdate the court judgment?",
-      "Is the answer counting political parties or individual candidates?",
-      "Could an earlier source legitimately report a different number?"
-    ]
+    claim: "How many political parties contested the Osun State 2026 Governorship Election?",
+    category: "Real-world question / candidate and party count",
+    priority: "Review recommended",
+    expectedStatus: "Verify against final election information",
+    reference: "INEC-related reporting stated that the inclusion of the SDP candidate following a court judgment increased the number of participating political parties from 14 to 15.",
+    source: "Channels Television — INEC statement on Osun SDP court judgment",
+    sourceUrl: "https://www.channelstv.com/2026/08/14/osun-sdp-judgement-we-printed-millions-of-ballot-papers-in-36-hours-inec/",
+    recommendation: "Use the final election-stage figure and check the publication date. Earlier reports may show 14 parties before the SDP candidate was included."
   },
-
-
-  /* -------------------------------------------------------
-     RWC-008
-     ------------------------------------------------------- */
 
   {
     id: "RWC-008",
-
-    claim:
-      "What were the final vote totals in the Osun State 2026 Governorship Election?",
-
-    category:
-      "Real-world question / election result",
-
-    priority:
-      "Review recommended",
-
-    expectedStatus:
-      "Verify against the declared result and cross-check independent reporting",
-
-    reference:
-      "Reported final figures included 511,067 votes for Ademola Adeleke, 444,815 for Bola Oyebamiji and 17,180 for Najeem Salaam.",
-
-    source:
-      "Channels Television — Osun Governorship Election Final Result",
-
-    sourceUrl:
-      "https://www.channelstv.com/2026/08/16/imole-de-accords-adeleke-wins-osun-governorship-election-returns-for-second-term/",
-
-    recommendation:
-      "Verify each candidate's figure independently rather than accepting a single aggregate number. Check that the figures correspond to the final declared result.",
-
-    questions: [
-      "What were the final votes recorded for each candidate?",
-      "Who announced the final result?",
-      "Where was the result announced?",
-      "Do the candidate totals agree with the reported valid-vote figure?",
-      "Is the source reporting the final result rather than an early or partial result?"
-    ]
+    claim: "What were the final vote totals in the Osun State 2026 Governorship Election?",
+    category: "Real-world question / election result",
+    priority: "Review recommended",
+    expectedStatus: "Verify against the declared result and cross-check independent reporting",
+    reference: "Reported final figures included 511,067 votes for Ademola Adeleke, 444,815 for Bola Oyebamiji and 17,180 for Najeem Salaam.",
+    source: "Channels Television — Osun Governorship Election Final Result",
+    sourceUrl: "https://www.channelstv.com/2026/08/16/imole-de-accords-adeleke-wins-osun-governorship-election-returns-for-second-term/",
+    recommendation: "Verify each candidate's figure independently rather than accepting a single aggregate number. Check that the figures correspond to the final declared result."
   }
 
 ];
@@ -1141,20 +933,22 @@ let currentTriage = null;
    ========================================================= */
 
 function initialise() {
-
   sessionClaims = [];
   verificationRecords = [];
-
   currentTriage = null;
 
   document.getElementById("submission").value = "";
+  
+  // Panels start hidden
+  document.getElementById("triagePanel").classList.add("hidden");
+  document.getElementById("triageArrow").textContent = "▶";
+  document.getElementById("triageTabStatus").textContent = "Click to open";
 
-  document.getElementById("triageResult").classList.remove("visible");
-
-  document.getElementById("triageEmpty").style.display = "block";
+  document.getElementById("queuePanel").classList.add("hidden");
+  document.getElementById("queueArrow").textContent = "▶";
+  document.getElementById("queueTabStatus").textContent = "Click to open";
 
   document.getElementById("verificationForm").classList.add("hidden");
-
   document.getElementById("verificationEmpty").style.display = "block";
 
   renderTable();
@@ -1163,80 +957,98 @@ function initialise() {
 
 
 /* =========================================================
-   STATISTICS
+   STATISTICS & INDICATORS
    ========================================================= */
 
 function updateStats() {
-
-  const all = [
-    ...records,
-    ...sessionClaims
-  ];
+  const all = [...records, ...sessionClaims];
 
   document.getElementById("recordsLoaded").textContent = all.length;
 
-  document.getElementById("reviewCount").textContent =
-    all.filter(r => r.priority === "Review recommended").length;
+  const reviewCount = all.filter(r => r.priority === "Review recommended").length;
+  document.getElementById("reviewCount").textContent = reviewCount;
 
   document.getElementById("lowCount").textContent =
     all.filter(r => r.priority === "Low").length;
 
   document.getElementById("revertCount").textContent =
-    all.filter(r => r.category === "Explicit revert").length;
+    all.filter(r => r.category === "Explicit revert" || r.category === "Revert").length;
+
+  // Queue tab waiting indicator
+  document.getElementById("queueIndicator").textContent = `${reviewCount} waiting`;
 }
 
 
 /* =========================================================
-   LOAD EXAMPLE
+   TOGGLE PANELS
+   ========================================================= */
+
+function toggleTriagePanel() {
+  const panel = document.getElementById("triagePanel");
+  const arrow = document.getElementById("triageArrow");
+  const status = document.getElementById("triageTabStatus");
+
+  if (panel.classList.contains("hidden")) {
+    panel.classList.remove("hidden");
+    arrow.textContent = "▼";
+    status.textContent = "Click to collapse";
+  } else {
+    panel.classList.add("hidden");
+    arrow.textContent = "▶";
+    status.textContent = "Click to open";
+  }
+}
+
+function toggleQueuePanel() {
+  const panel = document.getElementById("queuePanel");
+  const arrow = document.getElementById("queueArrow");
+  const status = document.getElementById("queueTabStatus");
+
+  if (panel.classList.contains("hidden")) {
+    panel.classList.remove("hidden");
+    arrow.textContent = "▼";
+    status.textContent = "Click to collapse";
+  } else {
+    panel.classList.add("hidden");
+    arrow.textContent = "▶";
+    status.textContent = "Click to open";
+  }
+}
+
+
+/* =========================================================
+   LOAD EXAMPLES
    ========================================================= */
 
 function loadExample() {
-
   document.getElementById("submission").value =
     "A large change was made to Candidate_application and should be reviewed before being accepted.";
 
-  document.getElementById("sourceType").value =
-    "Wikimedia public revision data";
+  document.getElementById("sourceType").value = "Wikimedia public revision data";
+  document.getElementById("priorityLens").value = "Large change";
 
-  document.getElementById("priorityLens").value =
-    "Large change";
+  // Open Queue Panel when loading an example
+  const queuePanel = document.getElementById("queuePanel");
+  if (queuePanel.classList.contains("hidden")) {
+    toggleQueuePanel();
+  }
 }
 
-
-/* =========================================================
-   REAL-WORLD CLAIM SELECTOR
-   ========================================================= */
-
 function loadRealWorldClaim() {
-
-  const options = realWorldClaims.map((item, index) => {
-
-    return `${index + 1}. ${item.claim}`;
-
-  }).join("\n");
+  const options = realWorldClaims.map((item, index) => `${index + 1}. ${item.claim}`).join("\n");
 
   const answer = prompt(
     "Select a real-world scenario by entering its number:\n\n" +
     options +
-    "\n\nEnter 1-" + realWorldClaims.length +
-    ", or type CUSTOM for your own claim."
+    "\n\nEnter 1-" + realWorldClaims.length + ", or type CUSTOM for your own claim."
   );
 
-  if (!answer) {
-    return;
-  }
-
+  if (!answer) return;
   const value = answer.trim().toUpperCase();
 
   if (value === "CUSTOM") {
-
-    const customClaim = prompt(
-      "Enter the real-world election claim or question:"
-    );
-
-    if (!customClaim) {
-      return;
-    }
+    const customClaim = prompt("Enter the real-world election claim or question:");
+    if (!customClaim) return;
 
     loadClaimIntoForm({
       id: "RWC-CUSTOM-" + Date.now(),
@@ -1247,27 +1059,13 @@ function loadRealWorldClaim() {
       reference: "No predefined reference. Reviewer must identify appropriate evidence.",
       source: "User-submitted real-world claim",
       sourceUrl: "",
-      recommendation:
-        "Identify an authoritative and dated source, verify the scope of the claim and document the evidence checked.",
-      questions: [
-        "What is the original source?",
-        "Is the source authoritative for this claim?",
-        "What date does the information refer to?",
-        "Does the evidence directly support the claim?",
-        "Could the claim require additional context?"
-      ]
+      recommendation: "Identify an authoritative and dated source, verify scope, and document evidence."
     });
-
     return;
   }
 
   const index = parseInt(value, 10) - 1;
-
-  if (
-    Number.isNaN(index) ||
-    index < 0 ||
-    index >= realWorldClaims.length
-  ) {
+  if (Number.isNaN(index) || index < 0 || index >= realWorldClaims.length) {
     alert("Please enter a valid scenario number.");
     return;
   }
@@ -1275,1310 +1073,263 @@ function loadRealWorldClaim() {
   loadClaimIntoForm(realWorldClaims[index]);
 }
 
-
-/* =========================================================
-   LOAD CLAIM INTO FORM
-   ========================================================= */
-
 function loadClaimIntoForm(item) {
-
   document.getElementById("submission").value = item.claim;
+  document.getElementById("sourceType").value = "Fact-checking submission";
+  document.getElementById("priorityLens").value = "Conflicting information";
 
-  document.getElementById("sourceType").value =
-    item.category.startsWith("Real-world")
-      ? "Fact-checking submission"
-      : "Election results/data record";
-
-  document.getElementById("priorityLens").value =
-    "Conflicting information";
-
-  const existing = sessionClaims.find(
-    item2 => item2.id === item.id
-  );
-
+  const existing = sessionClaims.find(item2 => item2.id === item.id);
   if (!existing) {
-
     sessionClaims.push({
-
       id: item.id,
       page: item.claim,
       editor: item.source,
       change: item.reference,
       category: item.category,
-      priority: item.priority,
-
-      realWorld: true,
-
-      expectedStatus: item.expectedStatus,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-
+      priority: item.priority
     });
+  }
 
+  // Open Queue Panel on loading claim scenario
+  const queuePanel = document.getElementById("queuePanel");
+  if (queuePanel.classList.contains("hidden")) {
+    toggleQueuePanel();
   }
 
   updateStats();
-
+  renderTable();
   runTriage();
 }
 
 
 /* =========================================================
-   DETECTION FUNCTIONS
+   TRIAGE LOGIC
    ========================================================= */
-
-
-/* Presidential four-year term */
-
-function isPresidentialFourYearClaim(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    (
-      t.includes("president") ||
-      t.includes("presidential")
-    ) &&
-    (
-      t.includes("four-year") ||
-      t.includes("four year") ||
-      t.includes("4-year") ||
-      t.includes("4 year")
-    ) &&
-    (
-      t.includes("term") ||
-      t.includes("tenure") ||
-      t.includes("office")
-    )
-  );
-}
-
-
-/* Broad political tenure */
 
 function isBroadTenureClaim(text) {
-
   const t = text.toLowerCase();
-
   return (
-    (
-      t.includes("every political office holder") ||
-      t.includes("every political officeholder") ||
-      t.includes("all political office holders") ||
-      t.includes("all political officeholders")
-    ) &&
-    (
-      t.includes("four-year") ||
-      t.includes("four year") ||
-      t.includes("4-year") ||
-      t.includes("4 year")
-    ) &&
-    (
-      t.includes("two terms") ||
-      t.includes("maximum of two") ||
-      t.includes("two-term") ||
-      t.includes("two term")
-    )
+    (t.includes("every political office") || t.includes("all political office") || t.includes("every politician")) &&
+    (t.includes("four-year") || t.includes("4-year") || t.includes("two terms") || t.includes("2 terms"))
   );
 }
-
-
-/* 2027 presidential candidate count */
-
-function is2027CandidateCountQuestion(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    t.includes("2027") &&
-    t.includes("presidential") &&
-    (
-      t.includes("candidate") ||
-      t.includes("people") ||
-      t.includes("running")
-    ) &&
-    (
-      t.includes("how many") ||
-      t.includes("number") ||
-      t.includes("count")
-    )
-  );
-}
-
-
-/* Osun death figure */
-
-function isOsun2026DeathClaim(text) {
-
-  const t = text.toLowerCase();
-
-  const osun =
-    t.includes("osun");
-
-  const year =
-    t.includes("2026");
-
-  const election =
-    t.includes("election") ||
-    t.includes("elections");
-
-  const death =
-    t.includes("died") ||
-    t.includes("death") ||
-    t.includes("deaths") ||
-    t.includes("killed") ||
-    t.includes("dead");
-
-  return osun && year && election && death;
-}
-
-
-/* Osun election date */
-
-function isOsunElectionDateQuestion(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    t.includes("osun") &&
-    t.includes("2026") &&
-    t.includes("election") &&
-    (
-      t.includes("when") ||
-      t.includes("what date") ||
-      t.includes("date")
-    ) &&
-    (
-      t.includes("held") ||
-      t.includes("conducted") ||
-      t.includes("take place")
-    )
-  );
-}
-
-
-/* Osun LGA question */
-
-function isOsunLGAQuestion(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    t.includes("osun") &&
-    t.includes("2026") &&
-    t.includes("election") &&
-    (
-      t.includes("local government") ||
-      t.includes("lga") ||
-      t.includes("lgas")
-    ) &&
-    (
-      t.includes("how many") ||
-      t.includes("number")
-    )
-  );
-}
-
-
-/* Osun political-party count */
-
-function isOsunPartyCountQuestion(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    t.includes("osun") &&
-    t.includes("2026") &&
-    t.includes("election") &&
-    (
-      t.includes("political parties") ||
-      t.includes("parties")
-    ) &&
-    (
-      t.includes("how many") ||
-      t.includes("number") ||
-      t.includes("contested")
-    )
-  );
-}
-
-
-/* Osun final result */
-
-function isOsunResultQuestion(text) {
-
-  const t = text.toLowerCase();
-
-  return (
-    t.includes("osun") &&
-    t.includes("2026") &&
-    t.includes("election") &&
-    (
-      t.includes("final result") ||
-      t.includes("final results") ||
-      t.includes("vote totals") ||
-      t.includes("votes") ||
-      t.includes("vote count")
-    )
-  );
-}
-
-
-/* =========================================================
-   GENERIC NUMBER EXTRACTION
-   ========================================================= */
-
-function extractDeathFigure(text) {
-
-  const patterns = [
-
-    /(\d[\d,]*)\s+(?:people\s+)?died/i,
-
-    /(\d[\d,]*)\s+(?:people\s+)?were\s+killed/i,
-
-    /(\d[\d,]*)\s+deaths?/i,
-
-    /(\d[\d,]*)\s+people\s+(?:were\s+)?dead/i
-
-  ];
-
-  for (const pattern of patterns) {
-
-    const match = text.match(pattern);
-
-    if (match) {
-      return match[1];
-    }
-
-  }
-
-  return null;
-}
-
-
-function extractCandidateCount(text) {
-
-  const patterns = [
-
-    /(\d[\d,]*)\s+(?:people|candidates?)\s+(?:are\s+)?running/i,
-
-    /how many.*?(\d[\d,]*)/i,
-
-    /(\d[\d,]*)\s+presidential\s+candidates?/i
-
-  ];
-
-  for (const pattern of patterns) {
-
-    const match = text.match(pattern);
-
-    if (match) {
-      return match[1];
-    }
-
-  }
-
-  return null;
-}
-
-
-/* =========================================================
-   REAL-WORLD RESULT DISPLAY
-   ========================================================= */
-
-function showRealWorldResult(
-  title,
-  priority,
-  action,
-  reference,
-  sourceUrl,
-  category = "Real-world claim"
-) {
-
-  document.getElementById("triageEmpty").style.display = "none";
-
-  const result = document.getElementById("triageResult");
-
-  result.classList.add("visible");
-
-  document.getElementById("resultTitle").textContent = title;
-
-  document.getElementById("resultBadges").innerHTML =
-    `<span class="badge badge-review">${priority}</span>`;
-
-  document.getElementById("resultAction").textContent =
-    action;
-
-  document.getElementById("resultCategory").textContent =
-    category;
-
-  document.getElementById("resultReference").textContent =
-    reference;
-
-  document.getElementById("resultSource").innerHTML =
-    sourceUrl
-      ? `<a class="source-link" href="${sourceUrl}" target="_blank" rel="noopener noreferrer">${sourceUrl}</a>`
-      : "No predefined source";
-
-  document.getElementById("resultRecommendation").textContent =
-    action;
-}
-
-
-/* =========================================================
-   RUN TRIAGE
-   ========================================================= */
 
 function runTriage() {
-
-  const text =
-    document.getElementById("submission").value.trim();
+  const text = document.getElementById("submission").value.trim();
+  const sourceType = document.getElementById("sourceType").value;
+  const priorityLens = document.getElementById("priorityLens").value;
 
   if (!text) {
-
-    alert("Please enter information to triage.");
-
+    alert("Please enter a claim or revision description to triage.");
     return;
   }
 
+  // Automatically open the Step 2 triage panel
+  const triagePanel = document.getElementById("triagePanel");
+  if (triagePanel.classList.contains("hidden")) {
+    toggleTriagePanel();
+  }
 
-  /* -------------------------------------------------------
-     BROAD TENURE
-     ------------------------------------------------------- */
+  const matchedRealWorld = realWorldClaims.find(r => r.claim.toLowerCase() === text.toLowerCase());
+  let triageData = {};
 
-  if (isBroadTenureClaim(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-002"
-    );
-
-    currentTriage = {
-      id: "RWC-002",
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
+  if (matchedRealWorld) {
+    triageData = {
+      title: matchedRealWorld.claim,
+      badge: matchedRealWorld.priority,
+      action: matchedRealWorld.expectedStatus,
+      category: matchedRealWorld.category,
+      reference: matchedRealWorld.reference,
+      source: matchedRealWorld.sourceUrl 
+        ? `<a href="${matchedRealWorld.sourceUrl}" target="_blank" class="source-link">${matchedRealWorld.source}</a>`
+        : matchedRealWorld.source,
+      recommendation: matchedRealWorld.recommendation,
+      rawItem: matchedRealWorld
     };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     PRESIDENTIAL FOUR-YEAR TERM
-     ------------------------------------------------------- */
-
-  if (isPresidentialFourYearClaim(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-001"
-    );
-
-    currentTriage = {
-      id: "RWC-001",
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
+  } else if (isBroadTenureClaim(text)) {
+    triageData = {
+      title: text,
+      badge: "Review recommended",
+      action: "Requires qualification and human verification",
+      category: "Real-world claim / constitutional tenure",
+      reference: "Constitutional tenure provisions apply to particular offices. Generalizations are often inaccurate.",
+      source: "Constitution of the Federal Republic of Nigeria",
+      recommendation: "Verify against specific constitutional sections (135, 137, 180, 182) for the office in question.",
+      rawItem: { id: "GEN-" + Date.now(), claim: text, category: "Real-world claim", priority: "Review recommended" }
     };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     2027 PRESIDENTIAL CANDIDATE COUNT
-     ------------------------------------------------------- */
-
-  if (is2027CandidateCountQuestion(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-003"
-    );
-
-    const figure = extractCandidateCount(text);
-
-    let action = item.recommendation;
-
-    if (figure) {
-
-      action =
-        "A numerical candidate-count claim was detected (" +
-        figure +
-        "). Verify it against the latest official INEC candidate information and check the date of the source.";
-
-    }
-
-    currentTriage = {
-      id: "RWC-003",
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: action,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     OSUN DEATH FIGURE
-     ------------------------------------------------------- */
-
-  if (isOsun2026DeathClaim(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-004"
-    );
-
-    const figure = extractDeathFigure(text);
-
-    let action = item.recommendation;
-
-    if (figure) {
-
-      action =
-        "A numerical death-toll claim was detected (" +
-        figure +
-        "). Do not treat the figure as established without checking its date, scope, methodology and attributable source.";
-
-    }
-
-    currentTriage = {
-      id: "RWC-004",
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: action,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     OSUN ELECTION DATE
-     ------------------------------------------------------- */
-
-  if (isOsunElectionDateQuestion(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-005"
-    );
-
-    currentTriage = {
-      id: item.id,
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     OSUN LGA QUESTION
-     ------------------------------------------------------- */
-
-  if (isOsunLGAQuestion(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-006"
-    );
-
-    currentTriage = {
-      id: item.id,
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     OSUN PARTY COUNT
-     ------------------------------------------------------- */
-
-  if (isOsunPartyCountQuestion(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-007"
-    );
-
-    currentTriage = {
-      id: item.id,
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     OSUN FINAL RESULT
-     ------------------------------------------------------- */
-
-  if (isOsunResultQuestion(text)) {
-
-    const item = realWorldClaims.find(
-      x => x.id === "RWC-008"
-    );
-
-    currentTriage = {
-      id: item.id,
-      claim: text,
-      category: item.category,
-      priority: item.priority,
-      action: item.recommendation,
-      reference: item.reference,
-      source: item.source,
-      sourceUrl: item.sourceUrl,
-      recommendation: item.recommendation,
-      questions: item.questions
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     GENERIC REAL-WORLD CLAIM
-     ------------------------------------------------------- */
-
-  if (
-    text.toLowerCase().includes("election") ||
-    text.toLowerCase().includes("candidate") ||
-    text.toLowerCase().includes("vote") ||
-    text.toLowerCase().includes("political")
-  ) {
-
-    currentTriage = {
-
-      id: "RWC-CUSTOM-" + Date.now(),
-
-      claim: text,
-
-      category:
-        "Real-world claim / general election information",
-
-      priority:
-        "Review recommended",
-
-      action:
-        "Identify an authoritative, dated source and verify the claim manually.",
-
-      reference:
-        "No predefined evidence record matched this claim.",
-
-      source:
-        "User-submitted information",
-
-      sourceUrl:
-        "",
-
-      recommendation:
-        "Check source authority, publication date, scope, wording, and whether the evidence directly supports the claim.",
-
-      questions: [
-        "What is the original source?",
-        "Is the source authoritative?",
-        "What date does the information refer to?",
-        "Does the evidence directly support the claim?",
-        "Could the claim require additional context?"
-      ]
-
-    };
-
-    displayTriage(currentTriage);
-
-    return;
-  }
-
-
-  /* -------------------------------------------------------
-     WIKIMEDIA TRIAGE
-     ------------------------------------------------------- */
-
-  let priority =
-    "Low";
-
-  let category =
-    "Normal/contextual edit";
-
-  let action =
-    "No immediate human review signal detected.";
-
-  const lens =
-    document.getElementById("priorityLens").value;
-
-
-  if (lens === "Process change") {
-
-    priority = "Review recommended";
-    category = "Process change";
-
-    action =
-      "Review the change and determine whether the process or policy context has materially changed.";
-  }
-
-
-  if (lens === "Large change") {
-
-    priority = "Review recommended";
-    category = "Large change";
-
-    action =
-      "Review the magnitude and context of the change before accepting it.";
-  }
-
-
-  if (lens === "Revert") {
-
-    priority = "Review recommended";
-    category = "Explicit revert";
-
-    action =
-      "Inspect the reverted content and surrounding revision history.";
-  }
-
-
-  if (lens === "Conflicting information") {
-
-    priority = "Review recommended";
-    category = "Conflicting information";
-
-    action =
-      "Compare the competing claims and identify authoritative evidence.";
-  }
-
-
-  if (lens === "Duplicate information") {
-
-    priority = "Review recommended";
-    category = "Duplicate information";
-
-    action =
-      "Check whether the information duplicates an existing record.";
-  }
-
-
-  currentTriage = {
-
-    id: "OV-SESSION-" + Date.now(),
-
-    claim: text,
-
-    category: category,
-
-    priority: priority,
-
-    action: action,
-
-    reference:
-      "Triage based on the selected Wikimedia review lens.",
-
-    source:
-      document.getElementById("sourceType").value,
-
-    sourceUrl:
-      "",
-
-    recommendation:
-      action,
-
-    questions: [
-      "What evidence supports the change?",
-      "Is the change consistent with the surrounding context?",
-      "Does the revision require human verification?"
-    ]
-
-  };
-
-
-  displayTriage(currentTriage);
-}
-
-
-/* =========================================================
-   DISPLAY TRIAGE
-   ========================================================= */
-
-function displayTriage(item) {
-
-  document.getElementById("triageEmpty").style.display =
-    "none";
-
-  const result =
-    document.getElementById("triageResult");
-
-  result.classList.add("visible");
-
-  document.getElementById("resultTitle").textContent =
-    item.priority === "Low"
-      ? "Low-priority triage result"
-      : "Review recommended";
-
-
-  let badgeClass =
-    item.priority === "Low"
-      ? "badge-low"
-      : item.category === "Explicit revert"
-        ? "badge-revert"
-        : "badge-review";
-
-
-  document.getElementById("resultBadges").innerHTML =
-
-    `<span class="badge ${badgeClass}">
-      ${item.priority}
-    </span>`;
-
-
-  document.getElementById("resultAction").textContent =
-    item.action;
-
-
-  document.getElementById("resultCategory").textContent =
-    item.category;
-
-
-  document.getElementById("resultReference").textContent =
-    item.reference;
-
-
-  if (item.sourceUrl) {
-
-    document.getElementById("resultSource").innerHTML =
-
-      `<strong>${escapeHtml(item.source)}</strong><br>
-       <a
-         class="source-link"
-         href="${item.sourceUrl}"
-         target="_blank"
-         rel="noopener noreferrer"
-       >
-         Open source
-       </a>`;
-
   } else {
+    const isRevert = text.toLowerCase().includes("revert");
+    const isLarge = priorityLens === "Large change" || text.length > 100;
 
-    document.getElementById("resultSource").textContent =
-      item.source;
+    triageData = {
+      title: text,
+      badge: isRevert || isLarge ? "Review recommended" : "Low",
+      action: isRevert ? "Verify revert reason" : (isLarge ? "Inspect diff" : "Routine triage"),
+      category: sourceType,
+      reference: "Submitted via user intake interface.",
+      source: sourceType,
+      recommendation: "Examine primary sources and verify supporting diffs or official statements before final determination.",
+      rawItem: { id: "GEN-" + Date.now(), claim: text, category: sourceType, priority: isRevert || isLarge ? "Review recommended" : "Low" }
+    };
   }
 
+  currentTriage = triageData;
 
-  document.getElementById("resultRecommendation").textContent =
-    item.recommendation;
+  document.getElementById("triageEmpty").style.display = "none";
+  document.getElementById("triageResult").classList.add("visible");
+  document.getElementById("resultTitle").textContent = triageData.title;
+
+  const badgeClass = triageData.badge === "Low" ? "badge-low" : "badge-review";
+  document.getElementById("resultBadges").innerHTML = `<span class="badge ${badgeClass}">${triageData.badge}</span>`;
+
+  document.getElementById("resultAction").textContent = triageData.action;
+  document.getElementById("resultCategory").textContent = triageData.category;
+  document.getElementById("resultReference").textContent = triageData.reference;
+  document.getElementById("resultSource").innerHTML = triageData.source;
+  document.getElementById("resultRecommendation").textContent = triageData.recommendation;
 }
 
 
 /* =========================================================
-   SEND CURRENT TO VERIFICATION QUEUE
+   QUEUE & TABLE RENDERING
    ========================================================= */
 
 function sendCurrentToVerification() {
+  if (!currentTriage) return;
 
-  if (!currentTriage) {
+  const item = currentTriage.rawItem;
+  const existing = sessionClaims.find(r => r.id === item.id);
 
-    alert("Run a triage first.");
-
-    return;
+  if (!existing) {
+    sessionClaims.push({
+      id: item.id || "OV-" + (records.length + sessionClaims.length + 1),
+      page: item.claim || currentTriage.title,
+      editor: item.source || "User Submission",
+      change: currentTriage.reference,
+      category: currentTriage.category,
+      priority: currentTriage.badge
+    });
   }
 
-
-  const id =
-    currentTriage.id;
-
-
-  const alreadyExists =
-    verificationRecords.some(
-      item => item.id === id
-    );
-
-
-  if (alreadyExists) {
-
-    alert("This record is already in the verification queue.");
-
-    return;
-  }
-
-
-  verificationRecords.push({
-
-    id: id,
-
-    page:
-      currentTriage.claim,
-
-    editor:
-      currentTriage.source,
-
-    change:
-      currentTriage.reference,
-
-    category:
-      currentTriage.category,
-
-    priority:
-      currentTriage.priority,
-
-    recommendation:
-      currentTriage.recommendation,
-
-    sourceUrl:
-      currentTriage.sourceUrl,
-
-    questions:
-      currentTriage.questions || [],
-
-    status:
-      "Pending"
-
-  });
-
-
+  updateStats();
   renderTable();
 
-  alert("Record added to the human verification queue.");
+  // Open Step 3 queue panel when manually adding an item from Step 2
+  const queuePanel = document.getElementById("queuePanel");
+  if (queuePanel.classList.contains("hidden")) {
+    toggleQueuePanel();
+  }
+
+  selectForReview(item.id || sessionClaims[sessionClaims.length - 1].id);
 }
-
-
-/* =========================================================
-   RENDER QUEUE
-   ========================================================= */
 
 function renderTable() {
+  const tbody = document.getElementById("queueBody");
+  const filter = document.getElementById("queueFilter").value;
+  const search = document.getElementById("queueSearch").value.toLowerCase();
 
-  const tbody =
-    document.getElementById("queueBody");
+  const all = [...records, ...sessionClaims];
 
-  const search =
-    document.getElementById("queueSearch")
-      ?.value
-      .toLowerCase()
-      .trim() || "";
+  const filtered = all.filter(r => {
+    const matchesFilter =
+      filter === "All" ||
+      (filter === "Review recommended" && r.priority === "Review recommended") ||
+      (filter === "Low priority" && r.priority === "Low") ||
+      (filter === "Explicit revert" && (r.category.includes("revert") || r.category.includes("Revert")));
 
-  const filter =
-    document.getElementById("queueFilter")
-      ?.value || "All";
+    const matchesSearch =
+      r.page.toLowerCase().includes(search) ||
+      r.editor.toLowerCase().includes(search) ||
+      r.category.toLowerCase().includes(search) ||
+      r.id.toLowerCase().includes(search);
 
-
-  const all = [
-
-    ...records,
-
-    ...verificationRecords
-
-      .filter(v =>
-        !records.some(r => r.id === v.id)
-      )
-
-  ];
-
-
-  const filtered =
-    all.filter(item => {
-
-      const matchesSearch =
-        !search ||
-
-        (
-          item.id +
-          " " +
-          item.page +
-          " " +
-          item.editor +
-          " " +
-          item.change +
-          " " +
-          item.category
-        )
-        .toLowerCase()
-        .includes(search);
-
-
-      let matchesFilter = true;
-
-
-      if (filter === "Review recommended") {
-
-        matchesFilter =
-          item.priority === "Review recommended";
-      }
-
-
-      if (filter === "Low") {
-
-        matchesFilter =
-          item.priority === "Low";
-      }
-
-
-      if (filter === "Explicit revert") {
-
-        matchesFilter =
-          item.category === "Explicit revert";
-      }
-
-
-      return matchesSearch && matchesFilter;
-
-    });
-
-
-  tbody.innerHTML = "";
-
-
-  if (!filtered.length) {
-
-    tbody.innerHTML = `
-
-      <tr>
-
-        <td colspan="7" style="text-align:center;padding:25px;">
-
-          No matching records.
-
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
-  }
-
-
-  filtered.forEach(item => {
-
-    const row =
-      document.createElement("tr");
-
-
-    let badgeClass =
-      item.priority === "Low"
-        ? "badge-low"
-        : item.category === "Explicit revert"
-          ? "badge-revert"
-          : "badge-review";
-
-
-    row.innerHTML = `
-
-      <td>
-        <strong>${escapeHtml(item.id)}</strong>
-      </td>
-
-      <td>
-        ${escapeHtml(item.page)}
-      </td>
-
-      <td>
-        ${escapeHtml(item.editor)}
-      </td>
-
-      <td>
-        ${escapeHtml(item.change)}
-      </td>
-
-      <td>
-        ${escapeHtml(item.category)}
-      </td>
-
-      <td>
-        <span class="badge ${badgeClass}">
-          ${escapeHtml(item.priority)}
-        </span>
-      </td>
-
-      <td>
-
-        <button
-          class="primary small-button"
-          onclick="reviewRecord('${escapeJs(item.id)}')"
-        >
-          Review
-        </button>
-
-      </td>
-
-    `;
-
-
-    tbody.appendChild(row);
-
+    return matchesFilter && matchesSearch;
   });
+
+  tbody.innerHTML = filtered.map(r => {
+    let badgeClass = "badge-review";
+    if (r.priority === "Low") badgeClass = "badge-low";
+    if (r.category.toLowerCase().includes("revert")) badgeClass = "badge-revert";
+
+    return `
+      <tr>
+        <td><strong>${r.id}</strong></td>
+        <td>${r.page}</td>
+        <td>${r.editor}</td>
+        <td>${r.change}</td>
+        <td>${r.category}</td>
+        <td><span class="badge ${badgeClass}">${r.priority}</span></td>
+        <td>
+          <button class="secondary small-button" onclick="selectForReview('${r.id}')">
+            Verify
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 }
 
 
 /* =========================================================
-   REVIEW RECORD
+   STEP 4 - VERIFICATION HANDLERS
    ========================================================= */
 
-function reviewRecord(id) {
-
-  const item = [
-
-    ...records,
-
-    ...verificationRecords
-
-  ].find(
-    x => x.id === id
-  );
-
-
-  if (!item) {
-
-    alert("Record not found.");
-
-    return;
-  }
-
-
-  document.getElementById("verificationEmpty")
-    .style.display = "none";
-
-
-  document.getElementById("verificationForm")
-    .classList.remove("hidden");
-
-
-  document.getElementById("reviewId")
-    .value = item.id;
-
-
-  document.getElementById("reviewClaim")
-    .textContent = item.page;
-
-
-  document.getElementById("reviewDecision")
-    .value = "Needs more evidence";
-
-
-  document.getElementById("evidenceChecked")
-    .value = "";
-
-
-  document.getElementById("reviewNotes")
-    .value = "";
-
-
-  document.getElementById("verificationForm")
-    .scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-}
-
-
-/* =========================================================
-   SAVE VERIFICATION
-   ========================================================= */
-
-function saveVerification() {
-
-  const id =
-    document.getElementById("reviewId").value;
-
-
-  const decision =
-    document.getElementById("reviewDecision").value;
-
-
-  const evidence =
-    document.getElementById("evidenceChecked").value.trim();
-
-
-  const notes =
-    document.getElementById("reviewNotes").value.trim();
-
-
-  if (!evidence) {
-
-    alert("Please specify the evidence checked.");
-
-    return;
-  }
-
-
-  const existing =
-    verificationRecords.find(
-      x => x.id === id
-    );
-
-
-  if (existing) {
-
-    existing.status =
-      decision;
-
-    existing.evidence =
-      evidence;
-
-    existing.notes =
-      notes;
-
-  } else {
-
-    verificationRecords.push({
-
-      id: id,
-
-      page:
-        "Existing Wikimedia record",
-
-      editor:
-        "Wikimedia public revision data",
-
-      change:
-        "Human verification",
-
-      category:
-        "Human verification",
-
-      priority:
-        "Review recommended",
-
-      status:
-        decision,
-
-      evidence:
-        evidence,
-
-      notes:
-        notes
-
-    });
-
-  }
-
-
-  alert("Human verification saved for this session.");
-
-  cancelVerification();
-
-  renderTable();
-
-}
-
-
-/* =========================================================
-   CANCEL VERIFICATION
-   ========================================================= */
-
-function cancelVerification() {
-
-  document.getElementById("verificationForm")
-    .classList.add("hidden");
-
-  document.getElementById("verificationEmpty")
-    .style.display = "block";
-
-  document.getElementById("reviewId").value = "";
-
-  document.getElementById("reviewClaim").textContent = "";
-
-  document.getElementById("evidenceChecked").value = "";
+function selectForReview(id) {
+  const all = [...records, ...sessionClaims];
+  const found = all.find(r => r.id === id);
+
+  if (!found) return;
+
+  document.getElementById("verificationEmpty").style.display = "none";
+  document.getElementById("verificationForm").classList.remove("hidden");
+
+  document.getElementById("reviewId").value = found.id;
+  document.getElementById("reviewClaim").innerHTML = `
+    <strong>ID:</strong> ${found.id}<br>
+    <strong>Item/Claim:</strong> ${found.page}<br>
+    <strong>Source/Editor:</strong> ${found.editor}
+  `;
 
   document.getElementById("reviewNotes").value = "";
+  document.getElementById("evidenceChecked").value = "";
 }
 
+function saveVerification() {
+  const id = document.getElementById("reviewId").value;
+  const decision = document.getElementById("reviewDecision").value;
+  const evidence = document.getElementById("evidenceChecked").value;
+  const notes = document.getElementById("reviewNotes").value;
 
-/* =========================================================
-   HTML ESCAPING
-   ========================================================= */
-
-function escapeHtml(value) {
-
-  if (value === null || value === undefined) {
-    return "";
+  if (!evidence) {
+    alert("Please state the evidence checked.");
+    return;
   }
 
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  verificationRecords.push({
+    id,
+    decision,
+    evidence,
+    notes,
+    timestamp: new Date().toISOString()
+  });
+
+  alert(`Verification saved for ${id} as [${decision}].`);
+  cancelVerification();
 }
 
-
-function escapeJs(value) {
-
-  return String(value)
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'");
+function cancelVerification() {
+  document.getElementById("verificationForm").classList.add("hidden");
+  document.getElementById("verificationEmpty").style.display = "block";
 }
 
 
 /* =========================================================
-   START APPLICATION
+   INITIAL LOAD
    ========================================================= */
 
-initialise();
+window.onload = function() {
+  initialise();
+};
 
 </script>
 
