@@ -325,15 +325,22 @@ function toggleQueuePanel() {
    LOAD EXAMPLES & REAL WORLD SCENARIOS
    ========================================================= */
 
+// ONLY Load Example expands the Human Verification Queue
 function loadExample() {
   document.getElementById("submission").value =
     "A large change was made to Candidate_application and should be reviewed before being accepted.";
 
   document.getElementById("sourceType").value = "Wikimedia public revision data";
   document.getElementById("priorityLens").value = "Large change";
+
+  // Open Queue Panel ONLY when Load Example is clicked
+  const queuePanel = document.getElementById("queuePanel");
+  if (queuePanel.classList.contains("hidden")) {
+    toggleQueuePanel();
+  }
 }
 
-// Loads real world claims directly into the main textarea on each click (cycling through preset examples)
+// Loads real world claims directly into the main textarea without expanding the queue
 function loadRealWorldClaim() {
   const selected = realWorldClaims[realWorldIndex];
   
@@ -388,7 +395,7 @@ function runTriage() {
     return;
   }
 
-  // Automatically open the Step 2 triage panel
+  // Automatically open Step 2 (AI triage result panel) only
   const triagePanel = document.getElementById("triagePanel");
   if (triagePanel.classList.contains("hidden")) {
     toggleTriagePanel();
