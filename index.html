@@ -229,6 +229,7 @@ const realWorldClaims = [
 let sessionClaims = [];
 let verificationRecords = [];
 let currentTriage = null;
+let realWorldIndex = 0;
 
 
 /* =========================================================
@@ -239,6 +240,7 @@ function initialise() {
   sessionClaims = [];
   verificationRecords = [];
   currentTriage = null;
+  realWorldIndex = 0;
 
   document.getElementById("submission").value = "";
   
@@ -329,41 +331,16 @@ function loadExample() {
 
   document.getElementById("sourceType").value = "Wikimedia public revision data";
   document.getElementById("priorityLens").value = "Large change";
-
-  // Open Queue Panel when loading an example
-  const queuePanel = document.getElementById("queuePanel");
-  if (queuePanel.classList.contains("hidden")) {
-    toggleQueuePanel();
-  }
 }
 
+// Loads real world claims directly into the main textarea on each click (cycling through preset examples)
 function loadRealWorldClaim() {
-  const options = realWorldClaims.map((item, index) => `${index + 1}. ${item.claim}`).join("\n");
+  const selected = realWorldClaims[realWorldIndex];
+  
+  // Advance to next index for subsequent clicks
+  realWorldIndex = (realWorldIndex + 1) % realWorldClaims.length;
 
-  const answer = prompt(
-    "Select a real-world scenario by entering its number:\n\n" +
-    options +
-    "\n\nEnter 1-" + realWorldClaims.length + ", or type CUSTOM to write your own in the box below."
-  );
-
-  if (!answer) return;
-  const value = answer.trim().toUpperCase();
-
-  if (value === "CUSTOM") {
-    const submissionArea = document.getElementById("submission");
-    submissionArea.value = "";
-    submissionArea.placeholder = "Type your custom real-world election claim or question here and click 'Run AI triage'...";
-    submissionArea.focus();
-    return;
-  }
-
-  const index = parseInt(value, 10) - 1;
-  if (Number.isNaN(index) || index < 0 || index >= realWorldClaims.length) {
-    alert("Please enter a valid scenario number.");
-    return;
-  }
-
-  loadClaimIntoForm(realWorldClaims[index]);
+  loadClaimIntoForm(selected);
 }
 
 function loadClaimIntoForm(item) {
@@ -381,12 +358,6 @@ function loadClaimIntoForm(item) {
       category: item.category,
       priority: item.priority
     });
-  }
-
-  // Open Queue Panel on loading claim scenario
-  const queuePanel = document.getElementById("queuePanel");
-  if (queuePanel.classList.contains("hidden")) {
-    toggleQueuePanel();
   }
 
   updateStats();
