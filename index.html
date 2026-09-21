@@ -442,62 +442,85 @@
   <!-- STEP 2 -->
   <div class="card">
     <div class="card-header">
-      <h2>Step 2 — AI-assisted triage result</h2>
-    </div>
+      <!-- STEP 2 -->
+<div class="card">
 
-    <div class="card-body">
+  <div
+    class="card-header triage-tab"
+    id="triageTab"
+    onclick="toggleTriagePanel()"
+    role="button"
+    tabindex="0"
+    onkeydown="if(event.key==='Enter' || event.key===' ') toggleTriagePanel()"
+  >
+    <h2>
+      <span id="triageArrow">▶</span>
+      AI-assisted triage result
+    </h2>
 
-      <div id="triageEmpty">
-        Submit information above and run triage.
-      </div>
-
-      <div id="triageResult" class="result">
-
-        <div id="resultTitle" class="result-title"></div>
-
-        <div id="resultBadges"></div>
-
-        <div class="result-grid">
-
-          <div class="result-box">
-            <strong>Recommended action</strong>
-            <span id="resultAction"></span>
-          </div>
-
-          <div class="result-box">
-            <strong>Category</strong>
-            <span id="resultCategory"></span>
-          </div>
-
-          <div class="result-box">
-            <strong>Evidence / reference</strong>
-            <span id="resultReference"></span>
-          </div>
-
-          <div class="result-box">
-            <strong>Source</strong>
-            <span id="resultSource"></span>
-          </div>
-
-        </div>
-
-        <div class="recommendation">
-          <strong>Human verification recommendation:</strong>
-          <span id="resultRecommendation"></span>
-        </div>
-
-        <div class="button-row">
-
-          <button class="success" onclick="sendCurrentToVerification()">
-            Send to verification queue
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
+    <span id="triageTabStatus">Click to open</span>
   </div>
+
+  <div
+    class="card-body hidden"
+    id="triagePanel"
+  >
+
+    <div id="triageEmpty">
+      Submit information above and run triage.
+    </div>
+
+    <div id="triageResult" class="result">
+
+      <div id="resultTitle" class="result-title"></div>
+
+      <div id="resultBadges"></div>
+
+      <div class="result-grid">
+
+        <div class="result-box">
+          <strong>Recommended action</strong>
+          <span id="resultAction"></span>
+        </div>
+
+        <div class="result-box">
+          <strong>Category</strong>
+          <span id="resultCategory"></span>
+        </div>
+
+        <div class="result-box">
+          <strong>Evidence / reference</strong>
+          <span id="resultReference"></span>
+        </div>
+
+        <div class="result-box">
+          <strong>Source</strong>
+          <span id="resultSource"></span>
+        </div>
+
+      </div>
+
+      <div class="recommendation">
+        <strong>Human verification recommendation:</strong>
+        <span id="resultRecommendation"></span>
+      </div>
+
+      <div class="button-row">
+
+        <button
+          class="success"
+          onclick="sendCurrentToVerification()"
+        >
+          Send to verification queue
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 
   <!-- STEP 3 -->
