@@ -1,3 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>OpenVerify AI — Election Information Triage</title>
+
+<style>
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7f9;
+  color: #17202a;
+  line-height: 1.5;
+}
+
+.container {
+  width: min(1200px, 94%);
+  margin: auto;
+}
+
+header {
+  background: #ffffff;
+  border-bottom: 1px solid #d9dee3;
+  padding: 24px 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+header p {
+  margin: 5px 0 0;
+  color: #5f6b76;
+}
+
+main {
+  padding: 25px 0 50px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #d9dee3;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+h2,
+h3 {
+  margin-top: 0;
+}
+
+.notice {
+  background: #f7f9fb;
+  border-left: 4px solid #3366cc;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+.warning {
+  border-left-color: #b32424;
+}
+
+.success {
+  border-left-color: #198754;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin: 14px 0 7px;
+}
+
+textarea,
+input,
+select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #b8c0c8;
+  border-radius: 8px;
+  font: inherit;
+  background: #ffffff;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 17px;
+  font-weight: 700;
+  cursor: pointer;
+  font: inherit;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.primary {
+  background: #3366cc;
+  color: white;
+}
+
+.secondary {
+  background: #eaecf0;
+  color: #202122;
+}
+
+.danger {
+  background: #b32424;
+  color: white;
+}
+
+.small-button {
+  padding: 7px 11px;
+  font-size: 13px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-row input {
+  flex: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand-mark {
+  font-size: 12px;
+  font-weight: 700;
+  background: #eaecf0;
+  padding: 7px 10px;
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: #ffffff;
+  border: 1px solid #d9dee3;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.stat-label {
+  color: #66717c;
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   SECTION TABS
+   ========================================================= */
+
+.section-tab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  cursor: pointer;
+}
+
+.section-tab:hover {
+  opacity: 0.85;
+}
+
+.section-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eaecf0;
+  font-weight: 800;
+}
+
+.tab-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tab-description {
+  display: block;
+  color: #66717c;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.tab-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #66717c;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.tab-indicator {
+  font-weight: 700;
+  color: #3366cc;
+}
+
+
+/* =========================================================
+   TRIAGE
+   ========================================================= */
+
+#triagePanel,
+#queuePanel,
+#voterEducationPanel {
+  border-top: 1px solid #eaecf0;
+  margin-top: 8px;
+  padding-top: 20px;
+}
+
+.triage-result {
+  border: 1px solid #d9dee3;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.triage-result.visible {
+  display: block;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 18px;
+}
+
+.result-item {
+  background: #f8f9fa;
+  padding: 13px;
+  border-radius: 8px;
+}
+
+.result-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.source-link {
+  color: #3366cc;
+  word-break: break-word;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.badge-review {
+  background: #fff3cd;
+  color: #664d03;
+}
+
+.badge-low {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.badge-revert {
+  background: #f8d7da;
+  color: #842029;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-controls {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 950px;
+}
+
+th,
+td {
+  padding: 11px;
+  border-bottom: 1px solid #eaecf0;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #f8f9fa;
+  font-size: 13px;
+}
+
+td {
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   HUMAN VERIFICATION
+   ========================================================= */
+
+#reviewClaim {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   VOTER EDUCATION
+   ========================================================= */
+
+.voter-education-section {
+  margin-top: 20px;
+}
+
+.subsection {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #d9dee3;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.status-message {
+  margin-top: 10px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.demo-note {
+  margin-top: 10px;
+  color: #66717c;
+  font-size: 13px;
+}
+
+.otp-display {
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 8px;
+  background: #eef3ff;
+  text-align: center;
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.message-preview {
+  border: 1px solid #c8ccd1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.preview-recipient,
+.preview-topic,
+.preview-source {
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.preview-body {
+  padding: 17px;
+  border-top: 1px solid #eaecf0;
+  border-bottom: 1px solid #eaecf0;
+}
+
+.preview-body p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #66717c;
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .brand {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-tab {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<header>
+
+  <div class="container brand">
+
+    <div>
+      <h1>OpenVerify AI</h1>
+      <p>
+        AI-assisted election information triage &amp; verification —
+        clickable proof of concept
+      </p>
+    </div>
+
+    <div class="brand-mark">
+      HUMAN-IN-THE-LOOP
+    </div>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+
+<!-- =========================================================
+     NOTICE
+     ========================================================= -->
+
+<section class="notice">
+
+  <strong>Important:</strong>
+  OpenVerify AI assists with information triage.
+  It does not independently declare information true, false,
+  fraudulent or manipulated. Human verification and evidence
+  checking remain necessary before a final determination.
+
+</section>
+
+
+<!-- =========================================================
+     STATISTICS
+     ========================================================= -->
+
+<div class="stats">
+
+  <div class="stat">
+    <div class="stat-value" id="recordsLoaded">0</div>
+    <div class="stat-label">Records loaded</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-value" id="reviewCount">0</div>
+    <div class="stat-label">Review recommended</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-value" id="lowCount">0</div>
+    <div class="stat-label">Low priority</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-value" id="revertCount">0</div>
+    <div class="stat-label">Explicit reverts</div>
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     STEP 1
+     ========================================================= -->
+
+<section class="card">
+
+  <h2>Step 1 — Submit information for triage</h2>
+
+  <label for="submission">
+    Claim, question or revision description
+  </label>
+
+  <textarea
+    id="submission"
+    rows="5"
+    placeholder="Enter a claim, question, revision description or election information..."
+  ></textarea>
+
+
+  <label for="sourceType">
+    Source type
+  </label>
+
+  <select id="sourceType">
+
+    <option>
+      Wikimedia public revision data
+    </option>
+
+    <option>
+      Election observation report
+    </option>
+
+    <option>
+      Fact-checking submission
+    </option>
+
+    <option>
+      Election results/data record
+    </option>
+
+  </select>
+
+
+  <label for="priorityLens">
+    Priority lens
+  </label>
+
+  <select id="priorityLens">
+
+    <option>
+      Process change
+    </option>
+
+    <option>
+      Large change
+    </option>
+
+    <option>
+      Revert
+    </option>
+
+    <option>
+      Conflicting information
+    </option>
+
+    <option>
+      Duplicate information
+    </option>
+
+  </select>
+
+
+  <div class="button-row">
+
+    <button
+      class="primary"
+      type="button"
+      onclick="runTriage()"
+    >
+      Run AI triage
+    </button>
+
+    <button
+      class="secondary"
+      type="button"
+      onclick="loadExample()"
+    >
+      Load Example
+    </button>
+
+    <button
+      class="secondary"
+      type="button"
+      onclick="loadRealWorldClaim()"
+    >
+      Real-world claim
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     STEP 2 — AI TRIAGE
+     ========================================================= -->
+
+<section class="card">
+
+  <div
+    class="section-tab"
+    onclick="toggleTriagePanel()"
+  >
+
+    <div class="section-left">
+
+      <span class="section-number">
+        2
+      </span>
+
+      <div>
+
+        <span class="tab-title">
+          AI-assisted triage
+        </span>
+
+        <span class="tab-description">
+          Review the machine-assisted assessment
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="tab-status">
+
+      <span id="triageTabStatus">
+        Click to open
+      </span>
+
+      <span id="triageArrow">
+        ▶
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="triagePanel"
+    class="hidden"
+  >
+
+    <div
+      id="triageEmpty"
+      class="notice"
+    >
+      Run AI triage to generate a result.
+    </div>
+
+
+    <div
+      id="triageResult"
+      class="triage-result hidden"
+    >
+
+      <div class="result-header">
+
+        <div
+          id="resultTitle"
+          class="result-title"
+        ></div>
+
+        <div id="resultBadges"></div>
+
+      </div>
+
+
+      <div class="result-grid">
+
+        <div class="result-item">
+          <strong>Recommended action</strong>
+          <span id="resultAction"></span>
+        </div>
+
+        <div class="result-item">
+          <strong>Category</strong>
+          <span id="resultCategory"></span>
+        </div>
+
+        <div class="result-item">
+          <strong>Reference</strong>
+          <span id="resultReference"></span>
+        </div>
+
+        <div class="result-item">
+          <strong>Source</strong>
+          <span id="resultSource"></span>
+        </div>
+
+      </div>
+
+
+      <div class="notice" style="margin-top:18px;">
+
+        <strong>Recommendation:</strong>
+
+        <span id="resultRecommendation"></span>
+
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          class="primary"
+          type="button"
+          onclick="sendCurrentToVerification()"
+        >
+          Send to Human Verification
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     STEP 3 — HUMAN VERIFICATION QUEUE
+     ========================================================= -->
+
+<section class="card">
+
+  <div
+    class="section-tab"
+    onclick="toggleQueuePanel()"
+  >
+
+    <div class="section-left">
+
+      <span class="section-number">
+        3
+      </span>
+
+      <div>
+
+        <span class="tab-title">
+          Human verification queue
+        </span>
+
+        <span class="tab-description">
+          Records requiring human review
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="tab-status">
+
+      <span
+        id="queueIndicator"
+        class="tab-indicator"
+      >
+        0 waiting
+      </span>
+
+      <span id="queueTabStatus">
+        Click to open
+      </span>
+
+      <span id="queueArrow">
+        ▶
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="queuePanel"
+    class="hidden"
+  >
+
+    <div class="table-controls">
+
+      <select
+        id="queueFilter"
+        onchange="renderTable()"
+      >
+
+        <option>
+          All
+        </option>
+
+        <option>
+          Review recommended
+        </option>
+
+        <option>
+          Low priority
+        </option>
+
+        <option>
+          Explicit revert
+        </option>
+
+      </select>
+
+
+      <input
+        id="queueSearch"
+        type="text"
+        placeholder="Search ID, page, editor or category..."
+        oninput="renderTable()"
+      >
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+            <th>Page / Claim</th>
+            <th>Editor / Source</th>
+            <th>Change</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Human action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="queueBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     STEP 4 — HUMAN VERIFICATION
+     ========================================================= -->
+
+<section class="card">
+
+  <div class="section-left">
+
+    <span class="section-number">
+      4
+    </span>
+
+    <div>
+
+      <span class="tab-title">
+        Human verification
+      </span>
+
+      <span class="tab-description">
+        Reviewer decision and evidence record
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div style="margin-top:18px;">
+
+    <div
+      id="verificationEmpty"
+      class="notice"
+    >
+      Select a record from the Human Verification Queue
+      to begin verification.
+    </div>
+
+
+    <div
+      id="verificationForm"
+      class="hidden"
+    >
+
+      <input
+        type="hidden"
+        id="reviewId"
+      >
+
+
+      <div
+        id="reviewClaim"
+      ></div>
+
+
+      <label for="reviewDecision">
+        Reviewer decision
+      </label>
+
+      <select id="reviewDecision">
+
+        <option value="">
+          Select decision
+        </option>
+
+        <option>
+          Verified
+        </option>
+
+        <option>
+          Requires correction
+        </option>
+
+        <option>
+          Insufficient evidence
+        </option>
+
+        <option>
+          Escalate
+        </option>
+
+      </select>
+
+
+      <label for="evidenceChecked">
+        Evidence checked
+      </label>
+
+      <textarea
+        id="evidenceChecked"
+        rows="4"
+        placeholder="Describe the source, document, revision, official statement or other evidence checked..."
+      ></textarea>
+
+
+      <label for="reviewNotes">
+        Reviewer notes
+      </label>
+
+      <textarea
+        id="reviewNotes"
+        rows="4"
+        placeholder="Add verification notes..."
+      ></textarea>
+
+
+      <div class="button-row">
+
+        <button
+          class="primary"
+          type="button"
+          onclick="saveVerification()"
+        >
+          Save Verification
+        </button>
+
+        <button
+          class="secondary"
+          type="button"
+          onclick="cancelVerification()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     STEP 5 — VOTER EDUCATION
+     ========================================================= -->
+
+<section class="card voter-education-section">
+
+  <div
+    class="section-tab"
+    onclick="toggleVoterEducationPanel()"
+  >
+
+    <div class="section-left">
+
+      <span class="section-number">
+        5
+      </span>
+
+      <div>
+
+        <span class="tab-title">
+          📢 Voter Education
+        </span>
+
+        <span class="tab-description">
+          Verified information → voter education message
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="tab-status">
+
+      <span
+        id="voterEducationIndicator"
+        class="tab-indicator"
+      >
+        Ready
+      </span>
+
+      <span id="voterEducationTabStatus">
+        Click to open
+      </span>
+
+      <span id="voterEducationArrow">
+        ▶
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="voterEducationPanel"
+    class="hidden"
+  >
+
+
+    <div class="notice">
+
+      <strong>Voter Education:</strong>
+
+      This demonstration converts verified electoral information
+      into an informational message for a confirmed, opted-in
+      test recipient.
+
+      It is not designed to persuade voters or communicate
+      candidate or party preferences.
+
+    </div>
+
+
+    <!-- PHONE CONFIRMATION -->
+
+    <div class="subsection">
+
+      <h3>
+        1. Confirm recipient phone number
+      </h3>
+
+
+      <label for="voterPhone">
+        Phone number
+      </label>
+
+
+      <div class="input-row">
+
+        <input
+          type="tel"
+          id="voterPhone"
+          placeholder="+2348012345678"
+          autocomplete="tel"
+        >
+
+
+        <button
+          class="secondary"
+          type="button"
+          onclick="sendDemoOTP()"
+        >
+          Send OTP
+        </button>
+
+      </div>
+
+
+      <div
+        id="phoneStatus"
+        class="status-message"
+      >
+        No phone number confirmed.
+      </div>
+
+
+      <div
+        id="otpArea"
+        class="hidden"
+      >
+
+        <label for="otpCode">
+          Enter confirmation code
+        </label>
+
+
+        <div class="input-row">
+
+          <input
+            type="text"
+            id="otpCode"
+            maxlength="6"
+            placeholder="Enter 6-digit OTP"
+            inputmode="numeric"
+          >
+
+
+          <button
+            class="secondary"
+            type="button"
+            onclick="confirmDemoOTP()"
+          >
+            Confirm Number
+          </button>
+
+        </div>
+
+
+        <div class="demo-note">
+
+          <strong>Demo mode:</strong>
+
+          The simulated OTP is displayed below.
+          In a production system it would be delivered
+          through an SMS/OTP provider.
+
+        </div>
+
+
+        <div
+          id="demoOtpDisplay"
+          class="otp-display hidden"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MESSAGE CREATION -->
+
+    <div class="subsection">
+
+      <h3>
+        2. Create voter education message
+      </h3>
+
+
+      <label for="educationTopic">
+        Education topic
+      </label>
+
+
+      <select id="educationTopic">
+
+        <option value="">
+          Select topic
+        </option>
+
+        <option>
+          Election date
+        </option>
+
+        <option>
+          Voting procedure
+        </option>
+
+        <option>
+          Voter registration
+        </option>
+
+        <option>
+          Polling unit information
+        </option>
+
+        <option>
+          Voter rights
+        </option>
+
+        <option>
+          BVAS information
+        </option>
+
+        <option>
+          Results information
+        </option>
+
+        <option>
+          Election security
+        </option>
+
+        <option>
+          Misinformation alert
+        </option>
+
+      </select>
+
+
+      <label for="educationSource">
+        Source / evidence
+      </label>
+
+
+      <input
+        type="text"
+        id="educationSource"
+        placeholder="e.g. INEC official information"
+      >
+
+
+      <label for="educationMessage">
+        Voter education message
+      </label>
+
+
+      <textarea
+        id="educationMessage"
+        rows="6"
+        placeholder="Enter verified voter education information..."
+      ></textarea>
+
+
+      <div class="button-row">
+
+        <button
+          class="secondary"
+          type="button"
+          onclick="generateEducationMessage()"
+        >
+          Generate Message
+        </button>
+
+
+        <button
+          class="primary"
+          type="button"
+          onclick="previewEducationMessage()"
+        >
+          Preview Message
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- MESSAGE PREVIEW -->
+
+    <div
+      id="educationPreview"
+      class="subsection hidden"
+    >
+
+      <h3>
+        3. Message preview
+      </h3>
+
+
+      <div class="message-preview">
+
+        <div class="preview-header">
+
+          <strong>
+            OpenVerify Voter Education
+          </strong>
+
+          <span id="previewStatus">
+            Pending approval
+          </span>
+
+        </div>
+
+
+        <div class="preview-recipient">
+
+          <strong>
+            Recipient:
+          </strong>
+
+          <span id="previewPhone">
+            —
+          </span>
+
+        </div>
+
+
+        <div class="preview-topic">
+
+          <strong>
+            Topic:
+          </strong>
+
+          <span id="previewTopic">
+            —
+          </span>
+
+        </div>
+
+
+        <div class="preview-body">
+
+          <p id="previewMessage">
+            —
+          </p>
+
+        </div>
+
+
+        <div class="preview-source">
+
+          <strong>
+            Source:
+          </strong>
+
+          <span id="previewSource">
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="notice">
+
+        <strong>
+          Human approval required:
+        </strong>
+
+        Review the recipient, source and message before
+        sending.
+
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          class="primary"
+          type="button"
+          onclick="sendTestSMS()"
+        >
+          📱 Send Test SMS
+        </button>
+
+      </div>
+
+
+      <div
+        id="smsResult"
+        class="status-message hidden"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+  OpenVerify AI — Election Information Triage &amp; Voter Education
+  <br>
+  Prototype demonstration. Human verification remains required.
+
+</footer>
+
+
 <script>
 
 /* =========================================================
@@ -231,30 +1733,73 @@ let verificationRecords = [];
 let currentTriage = null;
 let realWorldIndex = 0;
 
+let voterPhoneConfirmed = false;
+let demoOTP = null;
+let educationMessageApproved = false;
+
 
 /* =========================================================
    INITIALISE
    ========================================================= */
 
 function initialise() {
+
   sessionClaims = [];
   verificationRecords = [];
   currentTriage = null;
   realWorldIndex = 0;
 
+  voterPhoneConfirmed = false;
+  demoOTP = null;
+  educationMessageApproved = false;
+
+
   document.getElementById("submission").value = "";
-  
-  // Panels start hidden
+
+
+  /* AI TRIAGE PANEL */
+
   document.getElementById("triagePanel").classList.add("hidden");
   document.getElementById("triageArrow").textContent = "▶";
   document.getElementById("triageTabStatus").textContent = "Click to open";
+
+  document.getElementById("triageEmpty").style.display = "block";
+  document.getElementById("triageResult").classList.add("hidden");
+
+
+  /* QUEUE PANEL */
 
   document.getElementById("queuePanel").classList.add("hidden");
   document.getElementById("queueArrow").textContent = "▶";
   document.getElementById("queueTabStatus").textContent = "Click to open";
 
+
+  /* VERIFICATION */
+
   document.getElementById("verificationForm").classList.add("hidden");
   document.getElementById("verificationEmpty").style.display = "block";
+
+
+  /* VOTER EDUCATION */
+
+  document.getElementById("voterEducationPanel").classList.add("hidden");
+  document.getElementById("voterEducationArrow").textContent = "▶";
+  document.getElementById("voterEducationTabStatus").textContent = "Click to open";
+  document.getElementById("voterEducationIndicator").textContent = "Ready";
+
+  document.getElementById("otpArea").classList.add("hidden");
+  document.getElementById("educationPreview").classList.add("hidden");
+  document.getElementById("smsResult").classList.add("hidden");
+
+  document.getElementById("phoneStatus").textContent =
+    "No phone number confirmed.";
+
+  document.getElementById("voterPhone").value = "";
+  document.getElementById("otpCode").value = "";
+  document.getElementById("educationSource").value = "";
+  document.getElementById("educationMessage").value = "";
+  document.getElementById("educationTopic").value = "";
+
 
   renderTable();
   updateStats();
@@ -262,346 +1807,1511 @@ function initialise() {
 
 
 /* =========================================================
-   STATISTICS & INDICATORS
+   STATISTICS
    ========================================================= */
 
 function updateStats() {
+
   const all = [...records, ...sessionClaims];
 
-  document.getElementById("recordsLoaded").textContent = all.length;
+  document.getElementById("recordsLoaded").textContent =
+    all.length;
 
-  const reviewCount = all.filter(r => r.priority === "Review recommended").length;
-  document.getElementById("reviewCount").textContent = reviewCount;
+
+  const reviewCount =
+    all.filter(
+      r => r.priority === "Review recommended"
+    ).length;
+
+
+  document.getElementById("reviewCount").textContent =
+    reviewCount;
+
 
   document.getElementById("lowCount").textContent =
-    all.filter(r => r.priority === "Low").length;
+    all.filter(
+      r => r.priority === "Low"
+    ).length;
+
 
   document.getElementById("revertCount").textContent =
-    all.filter(r => r.category === "Explicit revert" || r.category === "Revert").length;
+    all.filter(
+      r =>
+        r.category === "Explicit revert" ||
+        r.category === "Revert"
+    ).length;
 
-  // Queue tab waiting indicator
-  document.getElementById("queueIndicator").textContent = `${reviewCount} waiting`;
+
+  document.getElementById("queueIndicator").textContent =
+    `${reviewCount} waiting`;
 }
 
 
 /* =========================================================
-   TOGGLE PANELS & MANUAL RESULT REVEAL
+   TOGGLE AI TRIAGE PANEL
    ========================================================= */
 
 function toggleTriagePanel() {
-  const panel = document.getElementById("triagePanel");
-  const arrow = document.getElementById("triageArrow");
-  const status = document.getElementById("triageTabStatus");
+
+  const panel =
+    document.getElementById("triagePanel");
+
+  const arrow =
+    document.getElementById("triageArrow");
+
+  const status =
+    document.getElementById("triageTabStatus");
+
 
   if (panel.classList.contains("hidden")) {
+
     panel.classList.remove("hidden");
+
     arrow.textContent = "▼";
     status.textContent = "Click to collapse";
+
   } else {
+
     panel.classList.add("hidden");
+
     arrow.textContent = "▶";
     status.textContent = "Click to open";
-  }
-}
 
-function toggleQueuePanel() {
-  const panel = document.getElementById("queuePanel");
-  const arrow = document.getElementById("queueArrow");
-  const status = document.getElementById("queueTabStatus");
-
-  if (panel.classList.contains("hidden")) {
-    panel.classList.remove("hidden");
-    arrow.textContent = "▼";
-    status.textContent = "Click to collapse";
-  } else {
-    panel.classList.add("hidden");
-    arrow.textContent = "▶";
-    status.textContent = "Click to open";
-  }
-}
-
-// Manually called to show the triage result content
-function showTriageResult() {
-  if (!currentTriage) {
-    alert("Please enter a claim and click 'Run AI triage' first.");
-    return;
   }
 
-  // Ensure Step 2 Panel is open
-  const triagePanel = document.getElementById("triagePanel");
-  if (triagePanel.classList.contains("hidden")) {
-    toggleTriagePanel();
-  }
-
-  // Display the actual calculated results
-  document.getElementById("triageEmpty").style.display = "none";
-  document.getElementById("triageResult").classList.add("visible");
 }
 
 
 /* =========================================================
-   LOAD EXAMPLES & REAL WORLD SCENARIOS
+   TOGGLE QUEUE PANEL
    ========================================================= */
 
-// ONLY Load Example expands the Human Verification Queue panel
+function toggleQueuePanel() {
+
+  const panel =
+    document.getElementById("queuePanel");
+
+  const arrow =
+    document.getElementById("queueArrow");
+
+  const status =
+    document.getElementById("queueTabStatus");
+
+
+  if (panel.classList.contains("hidden")) {
+
+    panel.classList.remove("hidden");
+
+    arrow.textContent = "▼";
+    status.textContent = "Click to collapse";
+
+  } else {
+
+    panel.classList.add("hidden");
+
+    arrow.textContent = "▶";
+    status.textContent = "Click to open";
+
+  }
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION PANEL
+   ========================================================= */
+
+function toggleVoterEducationPanel() {
+
+  const panel =
+    document.getElementById("voterEducationPanel");
+
+  const arrow =
+    document.getElementById("voterEducationArrow");
+
+  const status =
+    document.getElementById("voterEducationTabStatus");
+
+
+  if (panel.classList.contains("hidden")) {
+
+    panel.classList.remove("hidden");
+
+    arrow.textContent = "▼";
+    status.textContent = "Click to collapse";
+
+  } else {
+
+    panel.classList.add("hidden");
+
+    arrow.textContent = "▶";
+    status.textContent = "Click to open";
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD EXAMPLE
+   ========================================================= */
+
 function loadExample() {
+
   document.getElementById("submission").value =
     "A large change was made to Candidate_application and should be reviewed before being accepted.";
 
-  document.getElementById("sourceType").value = "Wikimedia public revision data";
-  document.getElementById("priorityLens").value = "Large change";
 
-  // Open Queue Panel ONLY when Load Example is clicked
-  const queuePanel = document.getElementById("queuePanel");
+  document.getElementById("sourceType").value =
+    "Wikimedia public revision data";
+
+
+  document.getElementById("priorityLens").value =
+    "Large change";
+
+
+  /*
+   * ONLY Load Example automatically opens
+   * the Human Verification Queue.
+   */
+
+  const queuePanel =
+    document.getElementById("queuePanel");
+
+
   if (queuePanel.classList.contains("hidden")) {
+
     toggleQueuePanel();
-  }
-}
 
-// Loads real world claims directly into the main textarea without displaying the result outright
-function loadRealWorldClaim() {
-  const selected = realWorldClaims[realWorldIndex];
-  
-  // Advance to next index for subsequent clicks
-  realWorldIndex = (realWorldIndex + 1) % realWorldClaims.length;
-
-  loadClaimIntoForm(selected);
-}
-
-function loadClaimIntoForm(item) {
-  document.getElementById("submission").value = item.claim;
-  document.getElementById("sourceType").value = "Fact-checking submission";
-  document.getElementById("priorityLens").value = "Conflicting information";
-
-  const existing = sessionClaims.find(item2 => item2.id === item.id);
-  if (!existing) {
-    sessionClaims.push({
-      id: item.id,
-      page: item.claim,
-      editor: item.source,
-      change: item.reference,
-      category: item.category,
-      priority: item.priority
-    });
   }
 
-  updateStats();
-  renderTable();
-  runTriage();
 }
 
 
 /* =========================================================
-   TRIAGE LOGIC
+   LOAD REAL WORLD CLAIM
+   ========================================================= */
+
+function loadRealWorldClaim() {
+
+  const selected =
+    realWorldClaims[realWorldIndex];
+
+
+  realWorldIndex =
+    (realWorldIndex + 1) %
+    realWorldClaims.length;
+
+
+  loadClaimIntoForm(selected);
+
+}
+
+
+/* =========================================================
+   LOAD CLAIM INTO FORM
+   ========================================================= */
+
+function loadClaimIntoForm(item) {
+
+  document.getElementById("submission").value =
+    item.claim;
+
+
+  document.getElementById("sourceType").value =
+    "Fact-checking submission";
+
+
+  document.getElementById("priorityLens").value =
+    "Conflicting information";
+
+
+  const existing =
+    sessionClaims.find(
+      item2 => item2.id === item.id
+    );
+
+
+  if (!existing) {
+
+    sessionClaims.push({
+
+      id: item.id,
+
+      page: item.claim,
+
+      editor: item.source,
+
+      change: item.reference,
+
+      category: item.category,
+
+      priority: item.priority
+
+    });
+
+  }
+
+
+  updateStats();
+  renderTable();
+
+  runTriage();
+
+}
+
+
+/* =========================================================
+   BROAD TENURE DETECTION
    ========================================================= */
 
 function isBroadTenureClaim(text) {
-  const t = text.toLowerCase();
+
+  const t =
+    text.toLowerCase();
+
+
   return (
-    (t.includes("every political office") || t.includes("all political office") || t.includes("every politician")) &&
-    (t.includes("four-year") || t.includes("4-year") || t.includes("two terms") || t.includes("2 terms"))
+
+    (
+      t.includes("every political office") ||
+      t.includes("all political office") ||
+      t.includes("every politician")
+    )
+
+    &&
+
+    (
+      t.includes("four-year") ||
+      t.includes("4-year") ||
+      t.includes("two terms") ||
+      t.includes("2 terms")
+    )
+
   );
-}
 
-function runTriage() {
-  const text = document.getElementById("submission").value.trim();
-  const sourceType = document.getElementById("sourceType").value;
-  const priorityLens = document.getElementById("priorityLens").value;
-
-  if (!text) {
-    alert("Please enter a claim or revision description to triage.");
-    return;
-  }
-
-  const matchedRealWorld = realWorldClaims.find(r => r.claim.toLowerCase() === text.toLowerCase());
-  let triageData = {};
-
-  if (matchedRealWorld) {
-    triageData = {
-      title: matchedRealWorld.claim,
-      badge: matchedRealWorld.priority,
-      action: matchedRealWorld.expectedStatus,
-      category: matchedRealWorld.category,
-      reference: matchedRealWorld.reference,
-      source: matchedRealWorld.sourceUrl 
-        ? `<a href="${matchedRealWorld.sourceUrl}" target="_blank" class="source-link">${matchedRealWorld.source}</a>`
-        : matchedRealWorld.source,
-      recommendation: matchedRealWorld.recommendation,
-      rawItem: matchedRealWorld
-    };
-  } else if (isBroadTenureClaim(text)) {
-    triageData = {
-      title: text,
-      badge: "Review recommended",
-      action: "Requires qualification and human verification",
-      category: "Real-world claim / constitutional tenure",
-      reference: "Constitutional tenure provisions apply to particular offices. Generalizations are often inaccurate.",
-      source: "Constitution of the Federal Republic of Nigeria",
-      recommendation: "Verify against specific constitutional sections (135, 137, 180, 182) for the office in question.",
-      rawItem: { id: "GEN-" + Date.now(), claim: text, category: "Real-world claim", priority: "Review recommended" }
-    };
-  } else {
-    const isRevert = text.toLowerCase().includes("revert");
-    const isLarge = priorityLens === "Large change" || text.length > 100;
-
-    triageData = {
-      title: text,
-      badge: isRevert || isLarge ? "Review recommended" : "Low",
-      action: isRevert ? "Verify revert reason" : (isLarge ? "Inspect diff" : "Routine triage"),
-      category: sourceType,
-      reference: "Submitted via user intake interface.",
-      source: sourceType,
-      recommendation: "Examine primary sources and verify supporting diffs or official statements before final determination.",
-      rawItem: { id: "GEN-" + Date.now(), claim: text, category: sourceType, priority: isRevert || isLarge ? "Review recommended" : "Low" }
-    };
-  }
-
-  currentTriage = triageData;
-
-  // Render values internally without displaying immediately
-  document.getElementById("resultTitle").textContent = triageData.title;
-
-  const badgeClass = triageData.badge === "Low" ? "badge-low" : "badge-review";
-  document.getElementById("resultBadges").innerHTML = `<span class="badge ${badgeClass}">${triageData.badge}</span>`;
-
-  document.getElementById("resultAction").textContent = triageData.action;
-  document.getElementById("resultCategory").textContent = triageData.category;
-  document.getElementById("resultReference").textContent = triageData.reference;
-  document.getElementById("resultSource").innerHTML = triageData.source;
-  document.getElementById("resultRecommendation").textContent = triageData.recommendation;
 }
 
 
 /* =========================================================
-   QUEUE & TABLE RENDERING
+   RUN AI TRIAGE
+   ========================================================= */
+
+function runTriage() {
+
+  const text =
+    document.getElementById("submission")
+      .value
+      .trim();
+
+
+  const sourceType =
+    document.getElementById("sourceType")
+      .value;
+
+
+  const priorityLens =
+    document.getElementById("priorityLens")
+      .value;
+
+
+  if (!text) {
+
+    alert(
+      "Please enter a claim or revision description to triage."
+    );
+
+    return;
+
+  }
+
+
+  const matchedRealWorld =
+    realWorldClaims.find(
+      r =>
+        r.claim.toLowerCase() ===
+        text.toLowerCase()
+    );
+
+
+  let triageData = {};
+
+
+  /* =====================================================
+     REAL WORLD MATCH
+     ===================================================== */
+
+  if (matchedRealWorld) {
+
+    triageData = {
+
+      title: matchedRealWorld.claim,
+
+      badge: matchedRealWorld.priority,
+
+      action: matchedRealWorld.expectedStatus,
+
+      category: matchedRealWorld.category,
+
+      reference: matchedRealWorld.reference,
+
+      source: matchedRealWorld.sourceUrl
+
+        ? `<a href="${matchedRealWorld.sourceUrl}"
+             target="_blank"
+             class="source-link">
+             ${escapeHtml(matchedRealWorld.source)}
+           </a>`
+
+        : escapeHtml(matchedRealWorld.source),
+
+      recommendation:
+        matchedRealWorld.recommendation,
+
+      rawItem:
+        matchedRealWorld
+
+    };
+
+  }
+
+
+  /* =====================================================
+     BROAD TENURE CLAIM
+     ===================================================== */
+
+  else if (isBroadTenureClaim(text)) {
+
+    triageData = {
+
+      title: text,
+
+      badge: "Review recommended",
+
+      action:
+        "Requires qualification and human verification",
+
+      category:
+        "Real-world claim / constitutional tenure",
+
+      reference:
+        "Constitutional tenure provisions apply to particular offices. Generalizations are often inaccurate.",
+
+      source:
+        "Constitution of the Federal Republic of Nigeria",
+
+      recommendation:
+        "Verify against specific constitutional sections (135, 137, 180, 182) for the office in question.",
+
+      rawItem: {
+
+        id:
+          "GEN-" + Date.now(),
+
+        claim:
+          text,
+
+        category:
+          "Real-world claim",
+
+        priority:
+          "Review recommended",
+
+        source:
+          "User Submission"
+
+      }
+
+    };
+
+  }
+
+
+  /* =====================================================
+     GENERIC TRIAGE
+     ===================================================== */
+
+  else {
+
+    const isRevert =
+      text.toLowerCase().includes("revert");
+
+
+    const isLarge =
+      priorityLens === "Large change" ||
+      text.length > 100;
+
+
+    triageData = {
+
+      title:
+        text,
+
+      badge:
+        isRevert || isLarge
+          ? "Review recommended"
+          : "Low",
+
+      action:
+        isRevert
+          ? "Verify revert reason"
+          : (
+              isLarge
+                ? "Inspect diff"
+                : "Routine triage"
+            ),
+
+      category:
+        sourceType,
+
+      reference:
+        "Submitted via user intake interface.",
+
+      source:
+        sourceType,
+
+      recommendation:
+        "Examine primary sources and verify supporting diffs or official statements before final determination.",
+
+      rawItem: {
+
+        id:
+          "GEN-" + Date.now(),
+
+        claim:
+          text,
+
+        category:
+          sourceType,
+
+        priority:
+          isRevert || isLarge
+            ? "Review recommended"
+            : "Low",
+
+        source:
+          sourceType
+
+      }
+
+    };
+
+  }
+
+
+  currentTriage =
+    triageData;
+
+
+  /* =====================================================
+     STORE RESULT
+     ===================================================== */
+
+  document.getElementById("resultTitle").textContent =
+    triageData.title;
+
+
+  const badgeClass =
+    triageData.badge === "Low"
+      ? "badge-low"
+      : "badge-review";
+
+
+  document.getElementById("resultBadges").innerHTML =
+
+    `<span class="badge ${badgeClass}">
+      ${escapeHtml(triageData.badge)}
+     </span>`;
+
+
+  document.getElementById("resultAction").textContent =
+    triageData.action;
+
+
+  document.getElementById("resultCategory").textContent =
+    triageData.category;
+
+
+  document.getElementById("resultReference").textContent =
+    triageData.reference;
+
+
+  document.getElementById("resultSource").innerHTML =
+    triageData.source;
+
+
+  document.getElementById("resultRecommendation").textContent =
+    triageData.recommendation;
+
+
+  /*
+   * IMPORTANT:
+   *
+   * The result is prepared internally but the
+   * AI-assisted triage panel remains closed.
+   *
+   * The user must click the Step 2 tab to see it.
+   */
+
+  document.getElementById("triageEmpty").style.display =
+    "none";
+
+
+  document.getElementById("triageResult")
+    .classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   SEND CURRENT TRIAGE TO HUMAN VERIFICATION
    ========================================================= */
 
 function sendCurrentToVerification() {
-  if (!currentTriage) return;
 
-  const item = currentTriage.rawItem;
-  const existing = sessionClaims.find(r => r.id === item.id);
+  if (!currentTriage) {
+
+    alert(
+      "Run AI triage first."
+    );
+
+    return;
+
+  }
+
+
+  const item =
+    currentTriage.rawItem;
+
+
+  const existing =
+    sessionClaims.find(
+      r => r.id === item.id
+    );
+
 
   if (!existing) {
+
     sessionClaims.push({
-      id: item.id || "OV-" + (records.length + sessionClaims.length + 1),
-      page: item.claim || currentTriage.title,
-      editor: item.source || "User Submission",
-      change: currentTriage.reference,
-      category: currentTriage.category,
-      priority: currentTriage.badge
+
+      id:
+        item.id ||
+        "OV-" +
+        (
+          records.length +
+          sessionClaims.length +
+          1
+        ),
+
+      page:
+        item.claim ||
+        currentTriage.title,
+
+      editor:
+        item.source ||
+        "User Submission",
+
+      change:
+        currentTriage.reference,
+
+      category:
+        currentTriage.category,
+
+      priority:
+        currentTriage.badge
+
     });
+
   }
+
 
   updateStats();
   renderTable();
 
-  // Open Step 3 queue panel when manually adding an item from Step 2
-  const queuePanel = document.getElementById("queuePanel");
+
+  /*
+   * Opening the queue here is intentional:
+   * the user explicitly chose to send the item
+   * to human verification.
+   */
+
+  const queuePanel =
+    document.getElementById("queuePanel");
+
+
   if (queuePanel.classList.contains("hidden")) {
+
     toggleQueuePanel();
+
   }
 
-  selectForReview(item.id || sessionClaims[sessionClaims.length - 1].id);
-}
 
-function renderTable() {
-  const tbody = document.getElementById("queueBody");
-  const filter = document.getElementById("queueFilter").value;
-  const search = document.getElementById("queueSearch").value.toLowerCase();
+  selectForReview(
+    item.id ||
+    sessionClaims[
+      sessionClaims.length - 1
+    ].id
+  );
 
-  const all = [...records, ...sessionClaims];
-
-  const filtered = all.filter(r => {
-    const matchesFilter =
-      filter === "All" ||
-      (filter === "Review recommended" && r.priority === "Review recommended") ||
-      (filter === "Low priority" && r.priority === "Low") ||
-      (filter === "Explicit revert" && (r.category.includes("revert") || r.category.includes("Revert")));
-
-    const matchesSearch =
-      r.page.toLowerCase().includes(search) ||
-      r.editor.toLowerCase().includes(search) ||
-      r.category.toLowerCase().includes(search) ||
-      r.id.toLowerCase().includes(search);
-
-    return matchesFilter && matchesSearch;
-  });
-
-  tbody.innerHTML = filtered.map(r => {
-    let badgeClass = "badge-review";
-    if (r.priority === "Low") badgeClass = "badge-low";
-    if (r.category.toLowerCase().includes("revert")) badgeClass = "badge-revert";
-
-    return `
-      <tr>
-        <td><strong>${r.id}</strong></td>
-        <td>${r.page}</td>
-        <td>${r.editor}</td>
-        <td>${r.change}</td>
-        <td>${r.category}</td>
-        <td><span class="badge ${badgeClass}">${r.priority}</span></td>
-        <td>
-          <button class="secondary small-button" onclick="selectForReview('${r.id}')">
-            Verify
-          </button>
-        </td>
-      </tr>
-    `;
-  }).join("");
 }
 
 
 /* =========================================================
-   STEP 4 - VERIFICATION HANDLERS
+   RENDER QUEUE TABLE
+   ========================================================= */
+
+function renderTable() {
+
+  const tbody =
+    document.getElementById("queueBody");
+
+
+  const filter =
+    document.getElementById("queueFilter").value;
+
+
+  const search =
+    document.getElementById("queueSearch")
+      .value
+      .toLowerCase();
+
+
+  const all =
+    [...records, ...sessionClaims];
+
+
+  const filtered =
+    all.filter(r => {
+
+      const matchesFilter =
+
+        filter === "All" ||
+
+        (
+          filter === "Review recommended" &&
+          r.priority === "Review recommended"
+        ) ||
+
+        (
+          filter === "Low priority" &&
+          r.priority === "Low"
+        ) ||
+
+        (
+          filter === "Explicit revert" &&
+          (
+            r.category
+              .toLowerCase()
+              .includes("revert")
+          )
+        );
+
+
+      const matchesSearch =
+
+        r.page
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        r.editor
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        r.category
+          .toLowerCase()
+          .includes(search)
+
+        ||
+
+        r.id
+          .toLowerCase()
+          .includes(search);
+
+
+      return matchesFilter && matchesSearch;
+
+    });
+
+
+  tbody.innerHTML =
+
+    filtered.map(r => {
+
+      let badgeClass =
+        "badge-review";
+
+
+      if (r.priority === "Low") {
+
+        badgeClass =
+          "badge-low";
+
+      }
+
+
+      if (
+        r.category
+          .toLowerCase()
+          .includes("revert")
+      ) {
+
+        badgeClass =
+          "badge-revert";
+
+      }
+
+
+      return `
+
+        <tr>
+
+          <td>
+            <strong>
+              ${escapeHtml(r.id)}
+            </strong>
+          </td>
+
+          <td>
+            ${escapeHtml(r.page)}
+          </td>
+
+          <td>
+            ${escapeHtml(r.editor)}
+          </td>
+
+          <td>
+            ${escapeHtml(r.change)}
+          </td>
+
+          <td>
+            ${escapeHtml(r.category)}
+          </td>
+
+          <td>
+
+            <span class="badge ${badgeClass}">
+              ${escapeHtml(r.priority)}
+            </span>
+
+          </td>
+
+          <td>
+
+            <button
+              class="secondary small-button"
+              onclick="selectForReview('${escapeJs(r.id)}')"
+            >
+              Verify
+            </button>
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   SELECT RECORD FOR HUMAN REVIEW
    ========================================================= */
 
 function selectForReview(id) {
-  const all = [...records, ...sessionClaims];
-  const found = all.find(r => r.id === id);
+
+  const all =
+    [...records, ...sessionClaims];
+
+
+  const found =
+    all.find(
+      r => r.id === id
+    );
+
 
   if (!found) return;
 
-  document.getElementById("verificationEmpty").style.display = "none";
-  document.getElementById("verificationForm").classList.remove("hidden");
 
-  document.getElementById("reviewId").value = found.id;
-  document.getElementById("reviewClaim").innerHTML = `
-    <strong>ID:</strong> ${found.id}<br>
-    <strong>Item/Claim:</strong> ${found.page}<br>
-    <strong>Source/Editor:</strong> ${found.editor}
+  document.getElementById(
+    "verificationEmpty"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "verificationForm"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "reviewId"
+  ).value =
+    found.id;
+
+
+  document.getElementById(
+    "reviewClaim"
+  ).innerHTML = `
+
+    <strong>ID:</strong>
+    ${escapeHtml(found.id)}
+    <br>
+
+    <strong>Item/Claim:</strong>
+    ${escapeHtml(found.page)}
+    <br>
+
+    <strong>Source/Editor:</strong>
+    ${escapeHtml(found.editor)}
+
   `;
 
-  document.getElementById("reviewNotes").value = "";
-  document.getElementById("evidenceChecked").value = "";
+
+  document.getElementById(
+    "reviewNotes"
+  ).value = "";
+
+
+  document.getElementById(
+    "evidenceChecked"
+  ).value = "";
+
+
+  document.getElementById(
+    "reviewDecision"
+  ).value = "";
+
 }
+
+
+/* =========================================================
+   SAVE VERIFICATION
+   ========================================================= */
 
 function saveVerification() {
-  const id = document.getElementById("reviewId").value;
-  const decision = document.getElementById("reviewDecision").value;
-  const evidence = document.getElementById("evidenceChecked").value;
-  const notes = document.getElementById("reviewNotes").value;
 
-  if (!evidence) {
-    alert("Please state the evidence checked.");
+  const id =
+    document.getElementById(
+      "reviewId"
+    ).value;
+
+
+  const decision =
+    document.getElementById(
+      "reviewDecision"
+    ).value;
+
+
+  const evidence =
+    document.getElementById(
+      "evidenceChecked"
+    ).value;
+
+
+  const notes =
+    document.getElementById(
+      "reviewNotes"
+    ).value;
+
+
+  if (!decision) {
+
+    alert(
+      "Please select a reviewer decision."
+    );
+
     return;
+
   }
 
+
+  if (!evidence) {
+
+    alert(
+      "Please state the evidence checked."
+    );
+
+    return;
+
+  }
+
+
   verificationRecords.push({
+
     id,
+
     decision,
+
     evidence,
+
     notes,
-    timestamp: new Date().toISOString()
+
+    timestamp:
+      new Date().toISOString()
+
   });
 
-  alert(`Verification saved for ${id} as [${decision}].`);
+
+  alert(
+    `Verification saved for ${id} as [${decision}].`
+  );
+
+
   cancelVerification();
+
 }
 
+
+/* =========================================================
+   CANCEL VERIFICATION
+   ========================================================= */
+
 function cancelVerification() {
-  document.getElementById("verificationForm").classList.add("hidden");
-  document.getElementById("verificationEmpty").style.display = "block";
+
+  document.getElementById(
+    "verificationForm"
+  ).classList.add("hidden");
+
+
+  document.getElementById(
+    "verificationEmpty"
+  ).style.display =
+    "block";
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION — SEND DEMO OTP
+   ========================================================= */
+
+function sendDemoOTP() {
+
+  const phone =
+    document.getElementById(
+      "voterPhone"
+    ).value.trim();
+
+
+  if (!phone) {
+
+    alert(
+      "Please enter a phone number first."
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Basic international phone format.
+   */
+
+  const phonePattern =
+    /^\+?[0-9]{10,15}$/;
+
+
+  if (!phonePattern.test(phone)) {
+
+    alert(
+      "Please enter a valid phone number in international format, " +
+      "for example +2348012345678."
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Generate six-digit DEMO OTP.
+   */
+
+  demoOTP =
+    String(
+      Math.floor(
+        100000 +
+        Math.random() * 900000
+      )
+    );
+
+
+  voterPhoneConfirmed =
+    false;
+
+
+  document.getElementById(
+    "otpArea"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "phoneStatus"
+  ).textContent =
+    "OTP generated. Enter the confirmation code.";
+
+
+  document.getElementById(
+    "voterEducationIndicator"
+  ).textContent =
+    "OTP sent";
+
+
+  /*
+   * DEMO ONLY.
+   *
+   * A real production system would send
+   * the OTP through an SMS provider.
+   */
+
+  document.getElementById(
+    "demoOtpDisplay"
+  ).textContent =
+    "Demo OTP: " + demoOTP;
+
+
+  document.getElementById(
+    "demoOtpDisplay"
+  ).classList.remove("hidden");
+
+
+  document.getElementById(
+    "otpCode"
+  ).value = "";
+
+
+  document.getElementById(
+    "otpCode"
+  ).focus();
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION — CONFIRM OTP
+   ========================================================= */
+
+function confirmDemoOTP() {
+
+  const enteredOTP =
+    document.getElementById(
+      "otpCode"
+    ).value.trim();
+
+
+  if (!demoOTP) {
+
+    alert(
+      "Please request an OTP first."
+    );
+
+    return;
+
+  }
+
+
+  if (enteredOTP !== demoOTP) {
+
+    voterPhoneConfirmed =
+      false;
+
+
+    document.getElementById(
+      "phoneStatus"
+    ).textContent =
+      "❌ Incorrect OTP. Phone number has not been confirmed.";
+
+
+    document.getElementById(
+      "voterEducationIndicator"
+    ).textContent =
+      "Not confirmed";
+
+
+    return;
+
+  }
+
+
+  voterPhoneConfirmed =
+    true;
+
+
+  document.getElementById(
+    "phoneStatus"
+  ).textContent =
+    "✓ Phone number confirmed for this demonstration.";
+
+
+  document.getElementById(
+    "voterEducationIndicator"
+  ).textContent =
+    "✓ Recipient confirmed";
+
+
+  document.getElementById(
+    "demoOtpDisplay"
+  ).textContent =
+    "✓ Number confirmed";
+
+
+  educationMessageApproved =
+    false;
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION — GENERATE MESSAGE
+   ========================================================= */
+
+function generateEducationMessage() {
+
+  const topic =
+    document.getElementById(
+      "educationTopic"
+    ).value;
+
+
+  const source =
+    document.getElementById(
+      "educationSource"
+    ).value.trim();
+
+
+  const message =
+    document.getElementById(
+      "educationMessage"
+    ).value.trim();
+
+
+  if (!topic) {
+
+    alert(
+      "Please select an education topic."
+    );
+
+    return;
+
+  }
+
+
+  if (!source) {
+
+    alert(
+      "Please provide the source or evidence."
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * If no message was entered,
+   * generate a neutral template.
+   */
+
+  if (!message) {
+
+    const generatedMessage =
+
+      "OpenVerify Voter Education: " +
+      topic +
+      " information is available from the verified source. " +
+      "Please check the official source for the latest information.";
+
+
+    document.getElementById(
+      "educationMessage"
+    ).value =
+      generatedMessage;
+
+  }
+
+
+  educationMessageApproved =
+    false;
+
+
+  document.getElementById(
+    "voterEducationIndicator"
+  ).textContent =
+
+    voterPhoneConfirmed
+      ? "Message ready"
+      : "Recipient not confirmed";
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION — PREVIEW
+   ========================================================= */
+
+function previewEducationMessage() {
+
+  if (!voterPhoneConfirmed) {
+
+    alert(
+      "Please confirm the recipient's phone number before " +
+      "previewing the message."
+    );
+
+    return;
+
+  }
+
+
+  const phone =
+    document.getElementById(
+      "voterPhone"
+    ).value.trim();
+
+
+  const topic =
+    document.getElementById(
+      "educationTopic"
+    ).value;
+
+
+  const source =
+    document.getElementById(
+      "educationSource"
+    ).value.trim();
+
+
+  const message =
+    document.getElementById(
+      "educationMessage"
+    ).value.trim();
+
+
+  if (!topic) {
+
+    alert(
+      "Please select an education topic."
+    );
+
+    return;
+
+  }
+
+
+  if (!source) {
+
+    alert(
+      "Please provide the source or evidence."
+    );
+
+    return;
+
+  }
+
+
+  if (!message) {
+
+    alert(
+      "Please enter or generate a voter education message."
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "previewPhone"
+  ).textContent =
+    phone;
+
+
+  document.getElementById(
+    "previewTopic"
+  ).textContent =
+    topic;
+
+
+  document.getElementById(
+    "previewMessage"
+  ).textContent =
+    message;
+
+
+  document.getElementById(
+    "previewSource"
+  ).textContent =
+    source;
+
+
+  document.getElementById(
+    "previewStatus"
+  ).textContent =
+    "Ready for human approval";
+
+
+  document.getElementById(
+    "educationPreview"
+  ).classList.remove("hidden");
+
+
+  educationMessageApproved =
+    true;
+
+
+  document.getElementById(
+    "voterEducationIndicator"
+  ).textContent =
+    "✓ Message ready";
+
+}
+
+
+/* =========================================================
+   VOTER EDUCATION — SEND TEST SMS
+   ========================================================= */
+
+function sendTestSMS() {
+
+  if (!voterPhoneConfirmed) {
+
+    alert(
+      "The recipient phone number must be confirmed first."
+    );
+
+    return;
+
+  }
+
+
+  if (!educationMessageApproved) {
+
+    alert(
+      "Please preview and approve the message before sending."
+    );
+
+    return;
+
+  }
+
+
+  const phone =
+    document.getElementById(
+      "voterPhone"
+    ).value.trim();
+
+
+  const message =
+    document.getElementById(
+      "educationMessage"
+    ).value.trim();
+
+
+  /*
+   * SIMULATION ONLY.
+   *
+   * No real SMS is sent from this HTML file.
+   */
+
+  const messageId =
+    "SMS-DEMO-" +
+    Date.now()
+      .toString()
+      .slice(-8);
+
+
+  const smsResult =
+    document.getElementById(
+      "smsResult"
+    );
+
+
+  smsResult.classList.remove("hidden");
+
+
+  smsResult.innerHTML = `
+
+    <strong>
+      ✓ Test SMS simulated successfully
+    </strong>
+
+    <br><br>
+
+    <strong>
+      Recipient:
+    </strong>
+
+    ${escapeHtml(phone)}
+
+    <br>
+
+    <strong>
+      Message ID:
+    </strong>
+
+    ${messageId}
+
+    <br>
+
+    <strong>
+      Status:
+    </strong>
+
+    Simulated delivery
+
+    <br>
+
+    <strong>
+      Message:
+    </strong>
+
+    ${escapeHtml(message)}
+
+  `;
+
+
+  document.getElementById(
+    "voterEducationIndicator"
+  ).textContent =
+    "✓ Message sent";
+
+
+  document.getElementById(
+    "previewStatus"
+  ).textContent =
+    "✓ Test SMS sent";
+
+}
+
+
+/* =========================================================
+   SECURITY HELPERS
+   ========================================================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function escapeJs(value) {
+
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'");
+
 }
 
 
@@ -610,7 +3320,12 @@ function cancelVerification() {
    ========================================================= */
 
 window.onload = function() {
+
   initialise();
+
 };
 
 </script>
+
+</body>
+</html>
