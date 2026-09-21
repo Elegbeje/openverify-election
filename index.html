@@ -285,7 +285,7 @@ function updateStats() {
 
 
 /* =========================================================
-   TOGGLE PANELS
+   TOGGLE PANELS & MANUAL RESULT REVEAL
    ========================================================= */
 
 function toggleTriagePanel() {
@@ -320,12 +320,30 @@ function toggleQueuePanel() {
   }
 }
 
+// Manually called to show the triage result content
+function showTriageResult() {
+  if (!currentTriage) {
+    alert("Please enter a claim and click 'Run AI triage' first.");
+    return;
+  }
+
+  // Ensure Step 2 Panel is open
+  const triagePanel = document.getElementById("triagePanel");
+  if (triagePanel.classList.contains("hidden")) {
+    toggleTriagePanel();
+  }
+
+  // Display the actual calculated results
+  document.getElementById("triageEmpty").style.display = "none";
+  document.getElementById("triageResult").classList.add("visible");
+}
+
 
 /* =========================================================
    LOAD EXAMPLES & REAL WORLD SCENARIOS
    ========================================================= */
 
-// ONLY Load Example expands the Human Verification Queue
+// ONLY Load Example expands the Human Verification Queue panel
 function loadExample() {
   document.getElementById("submission").value =
     "A large change was made to Candidate_application and should be reviewed before being accepted.";
@@ -340,7 +358,7 @@ function loadExample() {
   }
 }
 
-// Loads real world claims directly into the main textarea without expanding the queue
+// Loads real world claims directly into the main textarea without displaying the result outright
 function loadRealWorldClaim() {
   const selected = realWorldClaims[realWorldIndex];
   
@@ -395,12 +413,6 @@ function runTriage() {
     return;
   }
 
-  // Automatically open Step 2 (AI triage result panel) only
-  const triagePanel = document.getElementById("triagePanel");
-  if (triagePanel.classList.contains("hidden")) {
-    toggleTriagePanel();
-  }
-
   const matchedRealWorld = realWorldClaims.find(r => r.claim.toLowerCase() === text.toLowerCase());
   let triageData = {};
 
@@ -446,8 +458,7 @@ function runTriage() {
 
   currentTriage = triageData;
 
-  document.getElementById("triageEmpty").style.display = "none";
-  document.getElementById("triageResult").classList.add("visible");
+  // Render values internally without displaying immediately
   document.getElementById("resultTitle").textContent = triageData.title;
 
   const badgeClass = triageData.badge === "Low" ? "badge-low" : "badge-review";
